@@ -1,0 +1,425 @@
+
+# Configure a default setup of Home Assistant (frontend, api, etc)
+default_config:
+frontend:
+  themes: !include_dir_merge_named themes
+  extra_module_url:
+    - /local/card-mod.js
+
+homeassistant:
+  auth_providers:
+    - type: homeassistant
+  customize:
+    # Add an entry for each entity that you want to overwrite.
+    sensor.soil_sensor_soil_moisture:
+      device_class: humidity
+
+# Text to speech
+tts:
+  - platform: google_translate
+
+group: !include groups.yaml
+automation: !include automations.yaml
+script: !include scripts.yaml
+scene: !include scenes.yaml
+
+# browser_mod:
+#   disable:
+#     - all
+
+calendar:
+  - platform: caldav
+    url: https://caldav.icloud.com
+    username: lesschemical@gmail.com
+    password: !secret calday_key
+    calendars:
+
+mqtt:
+  sensor:
+    - state_topic: "homeassistant/camera/yicam/motion_detection"
+      qos: 1
+      name: "Motion sensor - yicam"
+      unique_id: motion_sensor_yicam
+    - state_topic: "homeassistant/camera/yicam/sound_detection"
+      qos: 1
+      name: "Sound sensor - yicam"
+      unique_id: sound_sensor_yicam
+
+camera:
+  - platform: ffmpeg
+    name: PetCam
+    input: rtsp://172.16.1.23:8554/pet-cam
+  - platform: yi
+    name: My Camera
+    host: "172.16.1.31"
+    password: !secret petcam_password
+    ffmpeg_arguments: "-vf scale=800:450"
+
+http:
+  use_x_forwarded_for: true
+  trusted_proxies:
+    - 172.16.1.23
+
+shell_command:
+  make_video: curl http://172.16.1.23:8822/video.php
+  mount_ipcam: curl http://172.16.1.23:8822/latestCam.jpg -o /config/www/latestCam.jpg
+
+switch:
+  - platform: wake_on_lan
+    name: "PC Wake"
+    mac: 40:8D:5C:B9:44:2B
+
+  - platform: wake_on_lan
+    name: "VM Wake"
+    mac: 52:54:00:F8:24:DD
+
+  - platform: flux
+    lights:
+      - light.color_temp_lights
+    name: Flux Lights
+    transition: 5
+    interval: 60
+    start_colortemp: 4000
+    sunset_colortemp: 3000
+    stop_colortemp: 2500
+    mode: mired
+
+media_player:
+  - platform: group
+    entities:
+      - media_player.beam
+      - media_player.kitchen
+      - media_player.bedroom
+
+spotcast:
+  sp_dc: !secret sp_dc
+  sp_key: !secret sp_key
+
+template:
+  - sensor:
+      - name: Plant low moisture
+        state: |
+          {{ states['sensor.soil_sensor_soil_moisture_2'].state | float < 20 }}
+      - name: Sonos Favorites List
+        state: 'OK'
+        attributes:
+          items: '{{ state_attr("sensor.sonos_favorites", "items").values() | list | join("~") }}'
+      - name: Translink {{ state_attr('sensor.translink_sb_1', 'RouteNo') }} SB
+        unique_id: Translink 59580 SB
+        state: |
+          {{
+          state_attr('sensor.translink_sb_1', 'Schedules')[0].ExpectedCountdown
+          }}{{
+          state_attr('sensor.translink_sb_1', 'Schedules')[0].ScheduleStatus
+          }}min at {{
+          state_attr('sensor.translink_sb_1', 'Schedules')[0].ExpectedLeaveTime
+          }}
+        attributes:
+          ExpectedCountdown: >
+            {{ state_attr('sensor.translink_sb_1', 'Schedules')[0].ExpectedCountdown }}
+          ExpectedLeaveTime: >
+            {{ state_attr('sensor.translink_sb_1', 'Schedules')[0].ExpectedLeaveTime }}
+      - name: Translink {{ state_attr('sensor.translink_sb_2', 'RouteNo') }} SB
+        unique_id: Translink 59580 SB 2
+        state: |
+          {{
+          state_attr('sensor.translink_sb_2', 'Schedules')[0].ExpectedCountdown
+          }}{{
+          state_attr('sensor.translink_sb_2', 'Schedules')[0].ScheduleStatus
+          }}min at {{
+          state_attr('sensor.translink_sb_2', 'Schedules')[0].ExpectedLeaveTime
+          }}
+        attributes:
+          ExpectedCountdown: >
+            {{ state_attr('sensor.translink_sb_2', 'Schedules')[0].ExpectedCountdown }}
+          ExpectedLeaveTime: >
+            {{ state_attr('sensor.translink_sb_2', 'Schedules')[0].ExpectedLeaveTime }}
+      - name: Translink {{ state_attr('sensor.translink_sb_3', 'RouteNo') }} SB
+        unique_id: Translink 59580 SB 3
+        state: |
+          {{
+          state_attr('sensor.translink_sb_3', 'Schedules')[0].ExpectedCountdown
+          }}{{
+          state_attr('sensor.translink_sb_3', 'Schedules')[0].ScheduleStatus
+          }}min at {{
+          state_attr('sensor.translink_sb_3', 'Schedules')[0].ExpectedLeaveTime
+          }}
+        attributes:
+          ExpectedCountdown: >
+            {{ state_attr('sensor.translink_sb_3', 'Schedules')[0].ExpectedCountdown }}
+          ExpectedLeaveTime: >
+            {{ state_attr('sensor.translink_sb_3', 'Schedules')[0].ExpectedLeaveTime }}
+
+rest:
+  - resource: https://api.translink.ca/RTTIAPI/V1/stops/59580/estimates?apiKey=XvWpEMxvLQY6TemyoSbE&count=2
+    headers:
+      Accept: application/json
+      Content-Type: application/json
+    # value_template: 'OK'
+    scan_interval:
+      seconds: 30
+    sensor:
+      - name: "translink_sb_1"
+        json_attributes_path: "$[0]"
+        value_template: "OK"
+        json_attributes:
+          - "RouteNo"
+          - "RouteName"
+          - "Schedules"
+      - name: "translink_sb_2"
+        json_attributes_path: "$[1]"
+        value_template: "OK"
+        json_attributes:
+          - "RouteNo"
+          - "RouteName"
+          - "Schedules"
+      - name: "translink_sb_3"
+        json_attributes_path: "$[2]"
+        value_template: "OK"
+        json_attributes:
+          - "RouteNo"
+          - "RouteName"
+          - "Schedules"
+
+sensor:
+  - platform: rtorrent
+    url: !secret rtorrent_url
+    monitored_variables:
+      - 'current_status'
+      - 'download_speed'
+      - 'upload_speed'
+      - 'all_torrents'
+      - 'stopped_torrents'
+      - 'complete_torrents'
+      - 'uploading_torrents'
+      - 'downloading_torrents'
+      - 'active_torrents'
+      
+  - platform: rest
+    resource: https://www.theweathernetwork.com/api/data/cabc0308
+    name: weather_network
+    json_attributes:
+      - obs
+      - swo
+    value_template: 'OK'
+    scan_interval:
+      minutes: 160
+    
+  - platform: waqi
+    token: !secret waqi_key
+    locations:
+      - vancouver
+
+  - platform: netdata
+    host: '172.16.1.23'
+    port: '19999'
+    resources:
+      system_load:
+        data_group: system.load
+        element: load15
+      core_temp:
+        data_group: sensors.k10temp-pci-00c3_temperature
+        element: k10temp-pci-00c3_temp1
+      hdd_temp_sdb:
+        data_group: hddtemp_local.temperatures
+        element: sdb
+      hdd_temp_sdc:
+        data_group: hddtemp_local.temperatures
+        element: sdc
+      hdd_temp_sdd:
+        data_group: hddtemp_local.temperatures
+        element: sdd
+      hdd_temp_cache:
+        data_group: hddtemp_local.temperatures
+        element: sde
+      hdd_temp_sdg:
+        data_group: hddtemp_local.temperatures
+        element: sdg
+      cache_usage:
+        data_group: btrfs.data_62beaf9d-e911-465f-99f8-109a5eb0d549
+        element: used
+      disk1_usage:
+        data_group: disk_space._mnt_disk1
+        element: avail
+      disk2_usage:
+        data_group: disk_space._mnt_disk2
+        element: avail
+      disk3_usage:
+        data_group: disk_space._mnt_disk3
+        element: avail
+      disk4_usage:
+        data_group: disk_space._mnt_disk4
+        element: avail
+        
+  - platform: lastfm
+    api_key: !secret lastfm_key
+    users:
+      - landonroha
+      - paperbutt
+
+  - platform: template
+    sensors:
+        beam_grouped_kitchen:
+          value_template: '{{ state_attr("media_player.kitchen", "media_title") == state_attr("media_player.beam", "media_title") and is_state("media_player.beam", "idle") == false }}'
+          friendly_name: 'Beam grouped to kitchen speaker'
+        beam_grouped_bedroom:
+          value_template: '{{ state_attr("media_player.bedroom", "media_title") == state_attr("media_player.beam", "media_title") and is_state("media_player.beam", "idle") == false }}'
+          friendly_name: 'Beam grouped to bedroom speaker'
+        current_time:
+          value_template: '{{ now().timestamp() | timestamp_custom("%-I:%M %p, %a %b  %d") }}'
+          friendly_name: 'Current Time'
+        weather_network_pollen_index:
+          value_template: '{{ states.sensor.weather_network.attributes["obs"]["pollen_index"] }}'
+          friendly_name: 'Pollen Index'
+        weather_network_pollen_name:
+          value_template: '{{ states.sensor.weather_network.attributes["obs"]["pollen_name"] }}'
+          friendly_name: 'Pollen Risk Type'
+        weather_network_uv_index:
+          value_template: '{{ states.sensor.weather_network.attributes["obs"]["uv_label"] }}'
+          friendly_name: 'UV Index'
+        weather_network_air_quality:
+          value_template: '{{ states.sensor.weather_network.attributes["obs"]["aq_level"] }}'
+          friendly_name: 'Air Quality'
+        weather_network_temperature:
+          value_template: '{{ states.sensor.weather_network.attributes["obs"]["t"] }}'
+          friendly_name: 'Temperature (Weather Network)'
+          device_class: temperature
+          unit_of_measurement: '°C'
+        weather_network_swo_level:
+          value_template: '{{ states.sensor.weather_network.attributes["swo"]["swo_level"] }}'
+          friendly_name: 'Severe Weather Risk Level'
+        weather_network_swo_type:
+          value_template: '{{ states.sensor.weather_network.attributes["swo"]["swo_type"] }}'
+          friendly_name: 'Severe Weather Risk Type'
+        desk_light_hue_saturation:
+          value_template: >
+            ({{ ((states.number.desk_height_cm.state | int - 59) / (115 - 59) * (360)) }}, 100)
+        desk_light_temperature:
+          value_template: >
+            {{ ((states.number.desk_height_cm.state | int - 59) / (115 - 59) * (6500 - 2000) + 2000) }}
+        clean_litter_time_template:
+          value_template: >
+            {{ ((as_timestamp(now()) - as_timestamp(state_attr('automation.litter_cleaned', 'last_triggered'))) / 3600) | round(1) }}hr
+        clean_litter_template:
+          value_template: >
+            {% if ((as_timestamp(now()) - as_timestamp(state_attr('automation.litter_cleaned', 'last_triggered'))) / 64800) > 1 -%}
+                true
+            {%- else -%}
+                false
+            {%- endif %}
+        washing_machine_state:
+          value_template: >
+            {% if states['input_boolean.washing_machine_running'].state == 'off' -%}
+              {% if states['binary_sensor.contact_sensor_contact'].state == 'off' -%}
+                    OffClosed
+                {%- else -%}
+                    OffOpen
+                {%- endif %}
+            {% else -%}
+              Running
+            {%- endif %}
+        dishwasher_running_template:
+          value_template: >
+            {% if states['input_boolean.dishwasher_running'].state == 'off' -%}
+                {% if ((as_timestamp(now()) - as_timestamp(state_attr('automation.notify_dishwasher_finished', 'last_triggered'))) / 86400) > 1 -%}
+                    Off {{ ((as_timestamp(now()) - as_timestamp(state_attr('automation.notify_dishwasher_finished', 'last_triggered'))) / 86400) | round(1) }}d
+                {%- else -%}
+                    Off {{ ((as_timestamp(now()) - as_timestamp(state_attr('automation.notify_dishwasher_finished', 'last_triggered'))) / 3600) | round(1) }}hr
+                {%- endif %}
+            {%- else -%}
+                On {{ ((as_timestamp(now()) - as_timestamp(state_attr('automation.notify_dishwasher_finished', 'last_triggered'))) / 60) | round(0) }}m
+            {%- endif %}
+        washing_machine_running_template:
+          value_template: >
+            {% if states['input_boolean.washing_machine_running'].state == 'off' -%}
+                {% if ((as_timestamp(now()) - as_timestamp(state_attr('automation.notify_washing_machine_finished', 'last_triggered'))) / 86400) > 1 -%}
+                    Off {{ ((as_timestamp(now()) - as_timestamp(state_attr('automation.notify_washing_machine_finished', 'last_triggered'))) / 86400) | round(1) }}d
+                {%- else -%}
+                    Off {{ ((as_timestamp(now()) - as_timestamp(state_attr('automation.notify_washing_machine_finished', 'last_triggered'))) / 3600) | round(1) }}hr
+                {%- endif %}
+            {%- else -%}
+                On {{ ((as_timestamp(now()) - as_timestamp(state_attr('automation.notify_washing_machine_finished', 'last_triggered'))) / 60) | round(0) }}m
+            {%- endif %}
+        tautulli_wan_bandwidth:
+          friendly_name: "Wan Bandwidth"
+          value_template: "{{ (state_attr('sensor.tautulli', 'wan_bandwidth') / 1024) | round(2) }}"
+          unit_of_measurement: "Mbps"
+        tautulli_lan_bandwidth:
+          friendly_name: "Lan Bandwidth"
+          value_template: "{{ (state_attr('sensor.tautulli', 'lan_bandwidth') / 1024) | round(2) }}"
+          unit_of_measurement: "Mbps"
+        tautulli_total_bandwidth:
+          friendly_name: "Total Bandwidth"
+          value_template: "{{ (state_attr('sensor.tautulli', 'total_bandwidth') / 1024) | round(2) }}"
+          unit_of_measurement: "Mbps"
+      
+light:
+  - platform: switch
+    name: Bathroom Lights
+    entity_id: switch.bathroom_switch
+  - platform: switch
+    name: Kitchen Track Lights
+    entity_id: switch.kitchen_track_switch
+    
+  - platform: switch
+    name: Living Room Shelf Light
+    entity_id: switch.ikea_power_outlet_2
+    
+  - platform: switch
+    name: Kitchen Counter Lights
+    entity_id: switch.kitchen_counter_switch
+
+  - platform: group
+    name: All Lights
+    entities:
+    - light.bathroom_light_switch
+    - light.bedroom_light
+    - light.hue_light
+    - light.kitchen_track_lights
+    - light.kitchen_light_1
+    - light.kitchen_light_2
+    - light.kitchen_counter_lights
+    - light.living_room_lamp_big
+    - light.living_room_lamp_small
+    - light.living_room_shelf_light
+    - light.nightstand_lamp_b
+    - light.nightstand_lamp_l
+    - light.the_orb
+    - light.living_room_lamp_back
+
+  - platform: group
+    name: Kitchen Lights
+    entities:
+    - light.kitchen_track_lights
+    - light.kitchen_light_1
+    - light.kitchen_light_2
+    - light.kitchen_counter_lights
+
+  - platform: group
+    name: Bedroom Lights
+    entities:
+    - light.bedroom_light
+    - light.nightstand_lamp_b
+    - light.nightstand_lamp_l
+
+  - platform: group
+    name: Living Room Lights
+    entities:
+    - light.living_room_lamp_big
+    - light.living_room_lamp_small
+    - light.living_room_shelf_light
+    - light.the_orb
+
+#Create Menu
+input_select:
+  lr_scene: #Custom Variable
+    options:
+      - dim
+      - colors
+      - offScene
+      - warm
+    initial: offScene
+  lr_scene_transition:
+    options:
+      - True
+      - False

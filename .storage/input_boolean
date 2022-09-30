@@ -1,0 +1,24 @@
+{
+    "version": 1,
+    "minor_version": 1,
+    "key": "input_boolean",
+    "data": {
+        "items": [
+            {
+                "name": "Dishwasher Running",
+                "icon": "mdi:dishwasher",
+                "id": "dishwasher_running"
+            },
+            {
+                "name": "Washing Machine Running",
+                "icon": "mdi:washing-machine",
+                "id": "washing_machine_running"
+            },
+            {
+                "name": "Living room guest",
+                "icon": "mdi:sofa-outline",
+                "id": "living_room_guest"
+            }
+        ]
+    }
+}

@@ -1,0 +1,392 @@
+sonos_group_all:
+  alias: Group all Sonos
+  sequence:
+  - service: media_player.join
+    data:
+      group_members:
+      - media_player.bedroom
+      - media_player.kitchen
+    target:
+      entity_id: media_player.beam
+  mode: single
+sonos_daily_mix:
+  alias: sonos daily mix
+  sequence:
+  - service: script.turn_on
+    entity_id:
+    - script.sonos_volume
+    - script.sonos_group_all
+  - service: tts.google_translate_say
+    data:
+      entity_id: media_player.beam
+      message: daily mix
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 1
+      milliseconds: 0
+  - service: media_player.select_source
+    data:
+      source: Daily Mix 1
+    target:
+      entity_id: media_player.beam
+  - service: media_player.shuffle_set
+    data:
+      shuffle: true
+    target:
+      entity_id: media_player.beam
+  - service: media_player.media_next_track
+    data: {}
+    target:
+      entity_id: media_player.beam
+  mode: single
+sonos_volume:
+  sequence:
+  - service: media_player.volume_set
+    entity_id:
+    - media_player.beam
+    - media_player.kitchen
+    data:
+      volume_level: 0.3
+  - service: media_player.volume_set
+    entity_id:
+    - media_player.bedroom
+    data:
+      volume_level: 0.3
+  - service: media_player.volume_mute
+    data:
+      entity_id:
+      - media_player.beam
+      - media_player.kitchen
+      - media_player.bedroom
+      is_volume_muted: false
+  mode: single
+  alias: Sonos Volume
+warm:
+  alias: warm scene script
+  sequence:
+  - service: scene.turn_on
+    data: {}
+    target:
+      entity_id: scene.warm
+  - service: adaptive_lighting.apply
+    data:
+      entity_id: switch.adaptive_lighting_default
+  - service: input_select.select_option
+    data:
+      option: warm
+    target:
+      entity_id: input_select.lr_scene
+  mode: single
+off_script:
+  alias: off script
+  sequence:
+  - service: mqtt.publish
+    data:
+      topic: zigbee2mqtt/all_lights/set
+      payload: '{"scene_recall": 0}'
+  - service: scene.turn_on
+    data: {}
+    target:
+      entity_id: scene.off
+  - service: light.turn_off
+    data: {}
+    target:
+      entity_id: light.living_room_lamp_small
+  - service: input_select.select_option
+    data:
+      option: offScene
+    target:
+      entity_id: input_select.lr_scene
+  mode: single
+colors:
+  sequence:
+  - service: scene.turn_on
+    data: {}
+    target:
+      entity_id: scene.colors
+  - service: mqtt.publish
+    data:
+      topic: zigbee2mqtt/all_lights/set
+      payload: '{"scene_recall": 2}'
+  - service: input_select.select_option
+    data:
+      option: colors
+    target:
+      entity_id: input_select.lr_scene
+  mode: single
+  alias: colors scene script
+stop_music:
+  alias: Stop music
+  sequence:
+  - service: media_player.unjoin
+    data: {}
+    target:
+      entity_id:
+      - media_player.beam
+      - media_player.kitchen
+      - media_player.bedroom
+  - service: media_player.media_stop
+    target:
+      device_id:
+      - 90e98d1ecee56bc8a850ac059eb531d3
+      - 63b5451979abbfec3201ab24592e6900
+      - 957d7ad9526a360f8ae9894d06373558
+    data: {}
+  - service: media_player.clear_playlist
+    target:
+      device_id:
+      - 90e98d1ecee56bc8a850ac059eb531d3
+      - 63b5451979abbfec3201ab24592e6900
+      - 957d7ad9526a360f8ae9894d06373558
+    data: {}
+  - service: media_player.turn_off
+    target:
+      device_id:
+      - 90e98d1ecee56bc8a850ac059eb531d3
+      - 63b5451979abbfec3201ab24592e6900
+      - 957d7ad9526a360f8ae9894d06373558
+    data: {}
+  mode: single
+volume_down_sonos:
+  alias: volume down sonos
+  sequence:
+  - service: media_player.volume_set
+    data_template:
+      volume_level: '{{ state_attr(''media_player.beam'', ''volume_level'') | float
+        - 0.05 }}'
+    target:
+      entity_id:
+      - media_player.beam
+      - media_player.bedroom
+      - media_player.kitchen
+  mode: single
+volume_up_sonos:
+  alias: volume up sonos
+  sequence:
+  - service: media_player.volume_set
+    data_template:
+      volume_level: '{{ state_attr(''media_player.beam'', ''volume_level'') | float
+        + 0.05 }}'
+    target:
+      entity_id:
+      - media_player.beam
+      - media_player.bedroom
+      - media_player.kitchen
+  mode: single
+set_tv_source:
+  alias: Set TV Source
+  sequence:
+  - service: script.stop_music
+  - service: media_player.volume_set
+    target:
+      entity_id:
+      - media_player.beam
+    data:
+      volume_level: 0.28
+  - service: tts.google_translate_say
+    data:
+      entity_id: media_player.beam
+      message: TV
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 1
+      milliseconds: 0
+  - service: media_player.select_source
+    target:
+      entity_id: media_player.beam
+    data:
+      source: TV
+  mode: single
+roku_youtube:
+  alias: Roku youtube
+  sequence:
+  - service: media_player.select_source
+    target:
+      entity_id: media_player.55_tcl_roku_tv
+    data:
+      source: YouTube
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 12
+      milliseconds: 0
+  - service: remote.send_command
+    target:
+      entity_id: remote.55_tcl_roku_tv
+    data:
+      command: select
+  mode: single
+off_a:
+  alias: off all script
+  sequence:
+  - service: script.off_script
+    data: {}
+  - service: script.stop_music
+    data: {}
+  - type: turn_off
+    device_id: b2031546510b1ac0a601400cf695f550
+    entity_id: remote.55_tcl_roku_tv
+    domain: remote
+  - service: switch.turn_on
+    data: {}
+    target:
+      entity_id: switch.tdisplay_sleep_toggle
+  mode: single
+sonos_r:
+  alias: sonos brenin recent
+  sequence:
+  - service: script.turn_on
+    entity_id:
+    - script.sonos_volume
+    - script.sonos_group_all
+  - service: tts.google_translate_say
+    data:
+      entity_id: media_player.beam
+      message: dj bren star
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 1
+      milliseconds: 0
+  - service: media_player.select_source
+    data:
+      source: B All Songs
+    target:
+      entity_id: media_player.beam
+  - service: media_player.shuffle_set
+    data:
+      shuffle: true
+    target:
+      entity_id: media_player.beam
+  - service: media_player.media_next_track
+    data: {}
+    target:
+      entity_id: media_player.beam
+  mode: single
+s:
+  alias: Scene Rotation Script
+  sequence:
+  - choose:
+    - conditions:
+      - condition: state
+        entity_id: input_select.lr_scene
+        state: offScene
+      sequence:
+      - service: input_select.select_option
+        data:
+          option: dim
+        target:
+          entity_id: input_select.lr_scene
+    default:
+    - service: input_select.select_next
+      target:
+        entity_id: input_select.lr_scene
+      data: {}
+  - choose:
+    - conditions:
+      - condition: state
+        entity_id: input_select.lr_scene
+        state: warm
+      sequence:
+      - service: script.warm
+        data: {}
+    - conditions:
+      - condition: state
+        entity_id: input_select.lr_scene
+        state: dim
+      sequence:
+      - service: script.dim_scene_script
+        data: {}
+    - conditions:
+      - condition: state
+        entity_id: input_select.lr_scene
+        state: offScene
+      sequence:
+      - service: script.off_script
+        data: {}
+    - conditions:
+      - condition: state
+        entity_id: input_select.lr_scene
+        state: colors
+      sequence:
+      - service: script.colors
+        data: {}
+    default: []
+  mode: single
+'1649791446703':
+  alias: Bang scene
+  sequence:
+  - service: number.set_value
+    data:
+      value: '7'
+    target:
+      entity_id:
+      - number.beam_bass
+      - number.kitchen_bass
+      - number.bedroom_bass
+  - service: switch.turn_on
+    data: {}
+    target:
+      entity_id:
+      - switch.kitchen_loudness
+      - switch.bedroom_loudness
+      - switch.beam_loudness
+  mode: single
+  icon: mdi:bullhorn
+quiet_scene:
+  alias: Quiet scene
+  sequence:
+  - service: number.set_value
+    data:
+      value: '3'
+    target:
+      entity_id:
+      - number.beam_bass
+      - number.kitchen_bass
+      - number.bedroom_bass
+  - service: switch.turn_off
+    data: {}
+    target:
+      entity_id:
+      - switch.kitchen_loudness
+      - switch.bedroom_loudness
+      - switch.beam_loudness
+  mode: single
+  icon: mdi:cat
+dim_scene_script:
+  alias: dim scene script
+  sequence:
+  - service: scene.turn_on
+    data: {}
+    target:
+      entity_id: scene.dim
+  - service: adaptive_lighting.apply
+    data:
+      entity_id: switch.adaptive_lighting_default
+  - service: input_select.select_option
+    data:
+      option: dim
+    target:
+      entity_id: input_select.lr_scene
+  mode: single
+feed_cat_single:
+  alias: Feed cat single
+  sequence:
+  - service: esphome.pin_test_feed_single
+    data: {}
+  mode: single
+bright_scene_script:
+  alias: bright scene script
+  sequence:
+  - service: scene.turn_on
+    data: {}
+    target:
+      entity_id: scene.bright
+  - service: input_select.select_option
+    data:
+      option: bright
+    target:
+      entity_id: input_select.lr_scene
+  mode: single

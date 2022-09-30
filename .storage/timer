@@ -1,0 +1,30 @@
+{
+    "version": 1,
+    "minor_version": 1,
+    "key": "timer",
+    "data": {
+        "items": [
+            {
+                "name": "box fan timer",
+                "icon": "mdi:fan",
+                "duration": "0:15:00",
+                "id": "box_fan_timer"
+            },
+            {
+                "name": "tent fan timer",
+                "duration": "0:30:00",
+                "id": "tent_fan_timer"
+            },
+            {
+                "name": "tent fan pwm debounce",
+                "duration": "0:01:00",
+                "id": "tent_fan_pwm_debounce"
+            },
+            {
+                "name": "fountain timer",
+                "duration": "0:15:00",
+                "id": "fountain_timer"
+            }
+        ]
+    }
+}

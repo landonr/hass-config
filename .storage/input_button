@@ -1,0 +1,34 @@
+{
+    "version": 1,
+    "minor_version": 1,
+    "key": "input_button",
+    "data": {
+        "items": [
+            {
+                "name": "Warm Scene Button",
+                "id": "warm_scene_button",
+                "icon": "mdi:weather-sunset-up"
+            },
+            {
+                "name": "Color Scene Button",
+                "icon": "mdi:looks",
+                "id": "color_scene_button"
+            },
+            {
+                "name": "Off Scene Button",
+                "icon": "mdi:sleep",
+                "id": "off_scene_button"
+            },
+            {
+                "name": "Bright Scene Button",
+                "icon": "mdi:brightness-7",
+                "id": "bright_scene_button"
+            },
+            {
+                "name": "PC Wake Button",
+                "icon": "mdi:desktop-classic",
+                "id": "pc_wake_button"
+            }
+        ]
+    }
+}

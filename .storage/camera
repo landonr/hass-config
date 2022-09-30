@@ -1,0 +1,9 @@
+{
+    "version": 1,
+    "key": "camera",
+    "data": {
+        "camera.streaming_enabled": {
+            "preload_stream": false
+        }
+    }
+}
