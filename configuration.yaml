@@ -99,7 +99,12 @@ template:
   - sensor:
       - name: Plant low moisture
         state: |
-          {{ states['sensor.soil_sensor_soil_moisture_2'].state | float < 20 }}
+            Water Plants
+            {%- for plant in expand('group.climate') | map(attribute='entity_id') -%}
+              {%- if states[plant].state | int < 25 -%}
+                {{ state_attr(plant, "friendly_name") | regex_replace("\s(.*)","") }}
+              {%- endif %}
+            {% endfor %}
       - name: Sonos Favorites List
         state: 'OK'
         attributes:

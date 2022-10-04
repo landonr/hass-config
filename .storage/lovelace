@@ -45,6 +45,7 @@
                     "card": {
                       "type": "custom:mushroom-title-card",
                       "title": "Clean Litter!! 😾",
+                      "subtitle": "It's been {{states['sensor.clean_litter_time_template'].state}}",
                       "alignment": "center"
                     },
                     "card_mod": {
@@ -78,14 +79,14 @@
                   "conditions": [
                     {
                       "entity": "sensor.plant_low_moisture",
-                      "state": "True"
+                      "state_not": "Water Plants"
                     }
                   ],
                   "card": {
                     "type": "custom:mod-card",
                     "card": {
                       "type": "custom:mushroom-title-card",
-                      "title": "Water plants!",
+                      "title": "{{ states['sensor.plant_low_moisture'].state }}",
                       "alignment": "center"
                     },
                     "card_mod": {
@@ -232,6 +233,35 @@
                       ]
                     }
                   ]
+                },
+                {
+                  "type": "custom:mini-graph-card",
+                  "name": "Plants",
+                  "entities": [
+                    {
+                      "entity": "sensor.plant_dad_soil_saturation",
+                      "unit": "%"
+                    },
+                    {
+                      "entity": "sensor.plant_vine_soil_saturation",
+                      "unit": "%"
+                    },
+                    {
+                      "entity": "sensor.plant_rubber_soil_saturation",
+                      "unit": "%"
+                    },
+                    {
+                      "entity": "sensor.plant_ficus_soil_saturation",
+                      "unit": "%"
+                    }
+                  ],
+                  "line_width": 3,
+                  "font_size": 75,
+                  "hours_to_show": 48,
+                  "points_per_hour": 0.5,
+                  "show_legend": true,
+                  "lower_bound": 0,
+                  "upper_bound": 100
                 }
               ]
             },
@@ -607,13 +637,7 @@
                       "entity": "sensor.tautulli"
                     },
                     {
-                      "entity": "sensor.tautulli_total_bandwidth"
-                    },
-                    {
-                      "entity": "sensor.tautulli_wan_bandwidth"
-                    },
-                    {
-                      "entity": "sensor.tautulli_lan_bandwidth"
+                      "entity": "sensor.total_bandwidth"
                     },
                     {
                       "entity": "sensor.sonarr_upcoming"
@@ -660,6 +684,27 @@
                   "entity": "sensor.netdata_cache_usage",
                   "detail": 1,
                   "name": "Cache Drive"
+                },
+                {
+                  "type": "custom:mini-graph-card",
+                  "hours_to_show": 12,
+                  "points_per_hour": 1,
+                  "entities": [
+                    "sensor.rtorrent_up_speed",
+                    "sensor.rtorrent_down_speed",
+                    "sensor.rt_ac3200_kib_s_received",
+                    "sensor.rt_ac3200_kib_s_sent",
+                    "sensor.total_bandwidth"
+                  ],
+                  "upper_bound": 20000
+                },
+                {
+                  "type": "custom:scheduler-card",
+                  "include": [
+                    "script.1649791446703",
+                    "script.quiet_scene"
+                  ],
+                  "exclude": []
                 }
               ]
             },
@@ -904,14 +949,6 @@
                   "points_per_hour": 30
                 }
               ]
-            },
-            {
-              "type": "custom:scheduler-card",
-              "include": [
-                "script.1649791446703",
-                "script.quiet_scene"
-              ],
-              "exclude": []
             },
             {
               "square": false,

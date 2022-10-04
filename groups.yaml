@@ -1,0 +1,7 @@
+climate:
+    name: "Plant Soil Sensors"
+    entities:
+      - sensor.plant_ficus_soil_saturation
+      - sensor.plant_dad_soil_saturation
+      - sensor.plant_rubber_soil_saturation
+      - sensor.plant_vine_soil_saturation
