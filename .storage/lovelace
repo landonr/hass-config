@@ -702,7 +702,8 @@
                   "type": "custom:scheduler-card",
                   "include": [
                     "script.1649791446703",
-                    "script.quiet_scene"
+                    "script.quiet_scene",
+                    "script.wake_up_alarm"
                   ],
                   "exclude": []
                 }
@@ -960,11 +961,6 @@
                   "chips": [
                     {
                       "type": "template",
-                      "content": "{{ now().timestamp() | timestamp_custom('%-I:%M %p, %a %b  %d') }}",
-                      "icon": "mdi:clock"
-                    },
-                    {
-                      "type": "template",
                       "content": "Dishwasher  {{ states['sensor.dishwasher_running_template'].state }}",
                       "icon": "mdi:dishwasher",
                       "entity": "sensor.sonoff_10015d88b0_power",
@@ -982,20 +978,6 @@
                       "tap_action": {
                         "action": "more-info"
                       }
-                    },
-                    {
-                      "type": "template",
-                      "entity": "sensor.soil_sensor_soil_moisture_2",
-                      "content": "Plant {{ states['sensor.soil_sensor_soil_moisture_2'].state }}%",
-                      "icon": "mdi:flower",
-                      "tap_action": {
-                        "action": "more-info"
-                      }
-                    },
-                    {
-                      "type": "template",
-                      "content": "Litter {{ states['sensor.clean_litter_time_template'].state }}",
-                      "icon": "mdi:cat"
                     }
                   ],
                   "alignment": "start"

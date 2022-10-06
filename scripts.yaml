@@ -390,3 +390,40 @@ bright_scene_script:
     target:
       entity_id: input_select.lr_scene
   mode: single
+wake_up_alarm:
+  alias: wake up alarm
+  sequence:
+  - service: media_player.volume_mute
+    data:
+      is_volume_muted: false
+    target:
+      entity_id: media_player.bedroom
+  - service: media_player.volume_set
+    data:
+      volume_level: 0.5
+    target:
+      entity_id: media_player.bedroom
+  - service: media_player.unjoin
+    data: {}
+    target:
+      entity_id: media_player.bedroom
+  - service: media_player.play_media
+    target:
+      entity_id: media_player.bedroom
+    data:
+      media_content_id: FV:2/68
+      media_content_type: favorite_item_id
+    metadata:
+      title: Feel Good Morning Mix
+      thumbnail: https://seed-mix-image.spotifycdn.com/v6/img/desc/Feel%20Good%20Morning/en/large
+      media_class: playlist
+      children_media_class:
+      navigateIds:
+      - {}
+      - media_content_type: favorites
+        media_content_id: ''
+      - media_content_type: favorites_folder
+        media_content_id: object.container.playlistContainer
+  - service: script.dim_scene_script
+    data: {}
+  mode: single
