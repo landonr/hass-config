@@ -187,6 +187,8 @@ rest:
           - "Schedules"
 
 sensor:
+  - platform: spotcast
+    country: CA
   - platform: rtorrent
     url: !secret rtorrent_url
     monitored_variables:

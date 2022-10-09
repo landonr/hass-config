@@ -6,6 +6,7 @@ sonos_group_all:
       group_members:
       - media_player.bedroom
       - media_player.kitchen
+      - media_player.office
     target:
       entity_id: media_player.beam
   mode: single
@@ -160,6 +161,7 @@ volume_down_sonos:
       - media_player.beam
       - media_player.bedroom
       - media_player.kitchen
+      - media_player.office
   mode: single
 volume_up_sonos:
   alias: volume up sonos
@@ -173,6 +175,7 @@ volume_up_sonos:
       - media_player.beam
       - media_player.bedroom
       - media_player.kitchen
+      - media_player.office
   mode: single
 set_tv_source:
   alias: Set TV Source
