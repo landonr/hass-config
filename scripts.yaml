@@ -127,12 +127,14 @@ stop_music:
       - media_player.beam
       - media_player.kitchen
       - media_player.bedroom
+      - media_player.kitchen
   - service: media_player.media_stop
     target:
       device_id:
       - 90e98d1ecee56bc8a850ac059eb531d3
       - 63b5451979abbfec3201ab24592e6900
       - 957d7ad9526a360f8ae9894d06373558
+      - 42a1c1e1fcb60e6d406df564c541c715
     data: {}
   - service: media_player.clear_playlist
     target:
@@ -140,6 +142,7 @@ stop_music:
       - 90e98d1ecee56bc8a850ac059eb531d3
       - 63b5451979abbfec3201ab24592e6900
       - 957d7ad9526a360f8ae9894d06373558
+      - 42a1c1e1fcb60e6d406df564c541c715
     data: {}
   - service: media_player.turn_off
     target:
@@ -147,6 +150,7 @@ stop_music:
       - 90e98d1ecee56bc8a850ac059eb531d3
       - 63b5451979abbfec3201ab24592e6900
       - 957d7ad9526a360f8ae9894d06373558
+      - 42a1c1e1fcb60e6d406df564c541c715
     data: {}
   mode: single
 volume_down_sonos:

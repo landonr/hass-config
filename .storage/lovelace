@@ -828,6 +828,10 @@
                       {
                         "entity_id": "media_player.bedroom",
                         "name": "Bedroom"
+                      },
+                      {
+                        "entity_id": "media_player.office",
+                        "name": "Office"
                       }
                     ]
                   },
@@ -875,6 +879,10 @@
                       {
                         "entity_id": "media_player.bedroom",
                         "name": "Bedroom"
+                      },
+                      {
+                        "entity_id": "media_player.office",
+                        "name": "Office"
                       }
                     ]
                   },
@@ -895,6 +903,54 @@
                   ],
                   "state_color": false,
                   "title": "Bedroom",
+                  "show_header_toggle": false
+                },
+                {
+                  "type": "custom:mini-media-player",
+                  "artwork": "cover",
+                  "hide": {
+                    "power": true,
+                    "source": true,
+                    "icon": true,
+                    "shuffle": false
+                  },
+                  "speaker_group": {
+                    "platform": "sonos",
+                    "show_group_count": true,
+                    "sync_volume": true,
+                    "entities": [
+                      {
+                        "entity_id": "media_player.beam",
+                        "name": "Beam"
+                      },
+                      {
+                        "entity_id": "media_player.kitchen",
+                        "name": "Kitchen"
+                      },
+                      {
+                        "entity_id": "media_player.bedroom",
+                        "name": "Bedroom"
+                      },
+                      {
+                        "entity_id": "media_player.office",
+                        "name": "Office"
+                      }
+                    ]
+                  },
+                  "entity": "media_player.office"
+                },
+                {
+                  "type": "entities",
+                  "entities": [
+                    {
+                      "entity": "number.office_bass"
+                    },
+                    {
+                      "entity": "number.office_treble"
+                    }
+                  ],
+                  "state_color": false,
+                  "title": "Office",
                   "show_header_toggle": false
                 }
               ]
