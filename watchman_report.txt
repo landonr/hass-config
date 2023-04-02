@@ -1,0 +1,71 @@
+-== Watchman Report ==- 
+
+-== Missing 1 service(s) from 59 found in your config:
++--------------------------------+---------+--------------------------------------------------------------+
+| Service ID                     | State   | Location                                                     |
++--------------------------------+---------+--------------------------------------------------------------+
+| esphome.tdisplayt4_goto_screen | missing | automations.yaml:1211,1248                                   |
++--------------------------------+---------+--------------------------------------------------------------+
+
+-== Missing 45 entity(ies) from 166 found in your config:
++--------------------------------+---------+--------------------------------------------------------------+
+| Entity ID                      | State   | Location                                                     |
++--------------------------------+---------+--------------------------------------------------------------+
+| light.nightstand_lamp          | missing | scenes.yaml:279,585,724                                      |
+| light.bathroom_light_switch    | missing | scenes.yaml:575                                              |
+| light.hue_light                | missing | scenes.yaml:577                                              |
+| light.living_room_shelf_light  | unavail | scenes.yaml:584                                              |
+| light.tv_lamp_small            | missing | automations.yaml:147                                         |
+| scene.warm                     | unavail | automations.yaml:157                                         |
+| switch.tt_pause                | missing | automations.yaml:399                                         |
+| switch.tt_volume_up            | missing | automations.yaml:403                                         |
+| switch.tt_volume_down          | missing | automations.yaml:407                                         |
+| switch.tt_next_track           | missing | automations.yaml:411                                         |
+| switch.tt_shuffle_on           | missing | automations.yaml:415                                         |
+| switch.tt_shuffle_off          | missing | automations.yaml:419                                         |
+| media_player.55_tcl_roku_tv    | unavail | automations.yaml:479,484,490,495,1479,1485                   |
+| button.desk_get_position       | unknown | automations.yaml:723,965                                     |
+| button.desk_position_up        | unknown | automations.yaml:905,940                                     |
+| button.desk_position_down      | unknown | automations.yaml:913,937                                     |
+| button.desk_position_nudge_up  | unknown | automations.yaml:921                                         |
+| button.desk_position_nudge_dow | unknown | automations.yaml:929                                         |
+| n                              |         |                                                              |
+| binary_sensor.lando_mbp_camera | missing | automations.yaml:972,976,986,1004                            |
+| _in_use                        |         |                                                              |
+| binary_sensor.litter_box_bin_c | missing | automations.yaml:1073                                        |
+| ontact                         |         |                                                              |
+| switch.all_lights              | unavail | automations.yaml:1182                                        |
+| sensor.tent_light_on_today     | missing | automations.yaml:1401,1422,1453                              |
+| switch.ikea_power_switch       | missing | automations.yaml:1520,1563                                   |
+| scene.off                      | unavail | scripts.yaml:94                                              |
+| scene.colors                   | unavail | scripts.yaml:106                                             |
+| remote.55_tcl_roku_tv          | unavail | scripts.yaml:222,235                                         |
+| switch.tdisplay_sleep_toggle   | missing | scripts.yaml:240                                             |
+| scene.dim                      | unavail | scripts.yaml:398                                             |
+| scene.bright                   | unavail | scripts.yaml:417                                             |
+| button.changedisplaytv         | unknown | scripts.yaml:560                                             |
+| sensor.soil_sensor_soil_moistu | missing | configuration.yaml:13                                        |
+| re                             |         |                                                              |
+| group.climate                  | unknown | configuration.yaml:120                                       |
+| sensor.weather_network         | missing | configuration.yaml:302,305,308,311,314,319,322               |
+| automation.notify_washing_mach | missing | configuration.yaml:365,366,368,371                           |
+| ine_finished                   |         |                                                              |
+| sensor.oven_temp_temperature_p | unavail | esphome/homething.yaml:48                                    |
+| robe                           |         |                                                              |
+| scene.hell                     | unavail | esphome/fireremote.yaml:130                                  |
+| sensor.soil_sensor_soil_moistu | missing | esphome/fireremote.yaml:158                                  |
+| re_2                           |         |                                                              |
+| number.set                     | missing | esphome/megadesk.yaml:88                                     |
+| sensor.template                | missing | esphome/tdisplayremote.yaml:173,183                          |
+| switch.kitchen_fan             | missing | esphome/esphomeRemote/sharedRemoteConfig.yaml:401            |
+| sensor.oven_temp_temperature_p | missing | esphome/esphomeRemote/sharedRemoteConfig.yaml:416            |
+| robe_1                         |         |                                                              |
+| switch.schedule_abcdef         | missing | custom_components/scheduler/services.yaml:8,29,94,154        |
+| light.my_lamp                  | missing | custom_components/scheduler/services.yaml:64,124             |
+| media_player.vardagsrum        | missing | custom_components/spotcast/services.yaml:21                  |
+| light.bedroom_ceiling          | missing | custom_components/adaptive_lighting/services.yaml:9,36       |
++--------------------------------+---------+--------------------------------------------------------------+
+
+-== Report created on 15 Mar 2023 06:51:33
+-== Parsed 58 files in 0.52s., ignored 0 files 
+-== Generated in: 0.01s. Validated in: 0.00s.

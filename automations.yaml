@@ -9,19 +9,9 @@
     id: red
   - platform: state
     entity_id:
-    - sensor.shortcut_button_white_action
-    to: 'on'
-    id: white
-  - platform: state
-    entity_id:
     - sensor.shortcut_button_red_action
     to: brightness_move_up
     id: redHold
-  - platform: state
-    entity_id:
-    - sensor.shortcut_button_white_action
-    to: brightness_move_up
-    id: whiteHold
   condition:
   - condition: not
     conditions:
@@ -189,11 +179,12 @@
           message: 'Low moisture warning for: {{sensors}}'
       threshold: 33
 - id: '1645344611834'
-  alias: motion timer on duration
+  alias: Bathroom motion
   description: ''
   trigger:
   - platform: state
-    entity_id: binary_sensor.motion
+    entity_id:
+    - binary_sensor.motion_sensor_occupancy
     id: motion
   - platform: state
     entity_id: timer.fountain_timer
@@ -203,35 +194,47 @@
   - choose:
     - conditions:
       - condition: state
-        entity_id: binary_sensor.motion
+        entity_id: binary_sensor.motion_sensor_occupancy
         state: 'on'
       sequence:
-      - service: timer.start
-        data: {}
-        target:
-          entity_id: timer.fountain_timer
-    default: []
-  - choose:
-    - conditions:
-      - condition: state
-        entity_id: binary_sensor.motion
-        state: 'on'
-      sequence:
-      - type: turn_on
-        device_id: 3a1df2c4b76763425057dfb9ade6f663
-        entity_id: switch.ikea_power_switch
-        domain: switch
-    - conditions:
-      - condition: state
-        entity_id: binary_sensor.motion
-        state: 'off'
-      - condition: trigger
-        id: timer
-      sequence:
-      - type: turn_off
-        device_id: 3a1df2c4b76763425057dfb9ade6f663
-        entity_id: switch.ikea_power_switch
-        domain: switch
+      - choose:
+        - conditions:
+          - condition: and
+            conditions:
+            - condition: device
+              device_id: 90e98d1ecee56bc8a850ac059eb531d3
+              domain: media_player
+              entity_id: media_player.beam
+              type: is_playing
+            - condition: state
+              entity_id: media_player.beam
+              attribute: media_content_type
+              state: music
+            - condition: not
+              conditions:
+              - condition: device
+                device_id: 957d7ad9526a360f8ae9894d06373558
+                domain: media_player
+                entity_id: media_player.office_tts
+                type: is_playing
+            - condition: not
+              conditions:
+              - condition: state
+                entity_id: media_player.beam
+                attribute: source
+                state: TV
+          sequence:
+          - service: media_player.join
+            data:
+              group_members:
+              - media_player.office
+            target:
+              entity_id: media_player.beam
+          - service: media_player.volume_set
+            data:
+              volume_level: 0.5
+            target:
+              entity_id: media_player.office
     default: []
   mode: single
 - id: '1645374378273'
@@ -319,9 +322,16 @@
               - fri
               - sat
               - sun
-            - condition: state
-              entity_id: light.all_lights
-              state: 'on'
+            - condition: and
+              conditions:
+              - condition: state
+                entity_id: light.all_lights
+                state: 'on'
+              - condition: not
+                conditions:
+                - condition: state
+                  entity_id: input_select.lr_scene
+                  state: hell
           sequence:
           - service: switch.turn_on
             data: {}
@@ -612,6 +622,10 @@
     id: brightness_stop
   condition: []
   action:
+  - service: switch.turn_off
+    data: {}
+    target:
+      entity_id: switch.adaptive_lighting_default
   - choose:
     - conditions:
       - condition: trigger
@@ -630,9 +644,7 @@
     - conditions:
       - condition: trigger
         id: left_click
-      sequence:
-      - service: script.scene_rotation_script_duplicate
-        data: {}
+      sequence: []
     - conditions:
       - condition: or
         conditions:
@@ -645,12 +657,27 @@
       - condition: trigger
         id: down_click
       sequence:
-      - service: light.turn_on
-        data:
-          brightness_step_pct: -20
-          transition: 0.2
-        target:
-          entity_id: light.all_lights
+      - choose:
+        - conditions:
+          - condition: template
+            value_template: "{{ state_attr(\"light.all_brightness_lights\", \"brightness\")\n
+              \                     / 255 > 0.75 }}"
+          sequence:
+          - service: light.turn_on
+            data:
+              brightness_step_pct: -25
+            target:
+              entity_id: light.all_brightness_lights
+        default:
+        - service: light.turn_on
+          data:
+            brightness_step_pct: -25
+          target:
+            entity_id: light.all_brightness_lights
+        - service: light.turn_off
+          data: {}
+          target:
+            entity_id: light.all_switch_lights
     - conditions:
       - condition: trigger
         id: up_click
@@ -668,27 +695,33 @@
               entity_id: input_select.lr_scene
           - service: light.turn_on
             data:
-              brightness_pct: 1
-              rgb_color:
-              - 255
-              - 0
-              - 0
+              brightness_pct: 25
+              color_temp: 500
             target:
-              entity_id: light.all_lights
+              entity_id: light.all_brightness_lights
+        - conditions:
+          - condition: template
+            value_template: '{{ state_attr("light.all_brightness_lights", "brightness")
+              / 255 > 0.3 }}'
+          sequence:
           - service: light.turn_on
             data:
-              transition: 60
-              brightness_pct: 1
-              kelvin: 2000
+              brightness_step_pct: 25
             target:
-              entity_id: light.all_lights
+              entity_id:
+              - light.all_lights
+              - light.all_brightness_lights
+          - service: light.turn_on
+            data: {}
+            target:
+              entity_id: light.all_switch_lights
         default:
         - service: light.turn_on
           data:
-            brightness_step_pct: 20
-            transition: 0.2
+            brightness_step_pct: 25
           target:
-            entity_id: light.all_lights
+            entity_id:
+            - light.all_brightness_lights
     - conditions:
       - condition: trigger
         id: down_hold
@@ -717,7 +750,7 @@
 
         '
     target:
-      entity_id: light.office_lamp
+      entity_id: light.rgb_lights
   - delay:
       hours: 0
       minutes: 0
@@ -747,100 +780,106 @@
       - media_player.kitchen
   mode: single
 - id: '1648336726982'
-  alias: Notify Dishwasher Finished
-  description: ''
+  alias: Chore Complete
+  description: Triggered when a chore is finished, checks it off in grocy
   trigger:
-  - platform: template
-    value_template: '{{ states[''sensor.sonoff_10015d88b0_power''].state | float >
-      20 }}'
-    for: 10
-  condition:
-  - condition: template
-    value_template: '{{ (as_timestamp(now())-as_timestamp(state_attr(''automation.notify_dishwasher_finished'',
-      ''last_triggered'') | default(0)) | int > 5400) }}'
+  - platform: state
+    entity_id:
+    - input_select.dishwasher_state_machine
+    to: job_completed
+    id: dishwasher
+  - platform: state
+    entity_id:
+    - input_select.washing_machine_state_machine
+    to: job_completed
+    id: washingmachine
+  - platform: device
+    domain: mqtt
+    device_id: fa4932847dd31aefa0be604b7dff588b
+    type: action
+    subtype: 'on'
+    discovery_id: 0x8cf681fffe32e982 action_on
+    id: litter
+  condition: []
   action:
-  - service: input_boolean.turn_on
-    data: {}
-    target:
-      entity_id: input_boolean.dishwasher_running
-  - wait_for_trigger:
-    - platform: template
-      value_template: '{{ states[''sensor.sonoff_10015d88b0_power''].state | float
-        < 5 }}'
-      for: 60
-  - service: input_boolean.turn_off
-    data: {}
-    target:
-      entity_id: input_boolean.dishwasher_running
-  - service: notify.mobile_app_iphone
-    data:
-      message: Dishwasher Done!
   - choose:
     - conditions:
-      - condition: device
-        device_id: 90e98d1ecee56bc8a850ac059eb531d3
-        domain: media_player
-        entity_id: media_player.beam
-        type: is_playing
+      - condition: trigger
+        id: dishwasher
+      sequence:
+      - service: notify.mobile_app_landorghini13
+        data:
+          message: Dishwasher Done!
+      - choose:
+        - conditions:
+          - condition: device
+            device_id: 90e98d1ecee56bc8a850ac059eb531d3
+            domain: media_player
+            entity_id: media_player.beam
+            type: is_playing
+          sequence:
+          - service: media_player.play_media
+            data:
+              media_content_id: media-source://tts/cloud?message=Dishwasher done
+              media_content_type: music
+              extra:
+                volume: 40
+            target:
+              entity_id:
+              - media_player.beam_tts
+      - service: grocy.execute_chore
+        data:
+          chore_id: '5'
+          done_by: '2'
+          skipped: false
+    - conditions:
+      - condition: trigger
+        id: washingmachine
+      sequence:
+      - service: notify.mobile_app_landorghini13
+        data:
+          message: Washing Machine Done!
+      - choose:
+        - conditions:
+          - condition: device
+            device_id: 90e98d1ecee56bc8a850ac059eb531d3
+            domain: media_player
+            entity_id: media_player.beam
+            type: is_playing
+          sequence:
+          - service: media_player.play_media
+            data:
+              media_content_id: media-source://tts/cloud?message=Washing Machine done
+              media_content_type: music
+              extra:
+                volume: 40
+            target:
+              entity_id:
+              - media_player.beam_tts
+      - service: grocy.execute_chore
+        data:
+          chore_id: '4'
+          done_by: '2'
+          skipped: false
+    - conditions:
+      - condition: trigger
+        id: litter
       sequence:
       - service: media_player.play_media
         data:
-          media_content_id: media-source://tts/cloud?message=Dishwasher done
+          media_content_id: media-source://tts/cloud?message=Litter Cleaned
           media_content_type: music
           extra:
             volume: 40
         target:
           entity_id:
-          - media_player.beam_tts
-    default: []
-  mode: single
-- id: '1649114942191'
-  alias: Notify Washing Machine Finished
-  description: ''
-  trigger:
-  - platform: template
-    value_template: '{{ states[''sensor.sonoff_10015d887b_power''].state | float >
-      10 }}'
-    for: 60
-  condition:
-  - condition: template
-    value_template: '{{ (as_timestamp(now())-as_timestamp(state_attr(''automation.notify_washing_machine_finished'',
-      ''last_triggered'') | default(0)) | int > 2400) }}'
-  action:
-  - service: input_boolean.turn_on
-    data: {}
-    target:
-      entity_id: input_boolean.washing_machine_running
-  - wait_for_trigger:
-    - platform: template
-      value_template: '{{ states[''sensor.sonoff_10015d887b_power''].state | float
-        == 0 }}'
-      for: 60
-  - service: input_boolean.turn_off
-    data: {}
-    target:
-      entity_id: input_boolean.washing_machine_running
-  - choose:
-    - conditions:
-      - condition: device
-        device_id: 90e98d1ecee56bc8a850ac059eb531d3
-        domain: media_player
-        entity_id: media_player.beam
-        type: is_playing
-      sequence:
-      - service: media_player.play_media
+          - media_player.bedroom_tts
+      - service: grocy.execute_chore
         data:
-          media_content_id: media-source://tts/cloud?message=Washing machine done
-          media_content_type: music
-          extra:
-            volume: 40
-        target:
-          entity_id:
-          - media_player.beam_tts
+          chore_id: '2'
+          done_by: '2'
+          skipped: false
     default: []
-  - service: notify.mobile_app_iphone
-    data:
-      message: Washing Machine Done!
   mode: single
 - id: '1651185641225'
   alias: Desk Actions
@@ -1115,25 +1154,29 @@
       - media_player.bedroom_tts
   mode: single
 - id: '1663439508903'
-  alias: Oven Fan Air Quality
+  alias: Oven Fan Toggle
   description: ''
   trigger:
   - platform: state
     entity_id:
-    - sensor.particulate_matter_level
-    to: low
+    - sensor.air_quality_oven_fan_trigger
+    to: 'False'
     id: 'off'
   - platform: state
     entity_id:
-    - sensor.particulate_matter_level
-    from: low
+    - sensor.air_quality_oven_fan_trigger
     id: 'on'
-    to: med
+    to: 'True'
   - platform: state
     entity_id:
-    - sensor.particulate_matter_level
-    to: high
-    id: 'on'
+    - sensor.oven_toggle_button_click
+    to: 'on'
+    id: buttonOn
+  - platform: state
+    entity_id:
+    - sensor.oven_toggle_button_click
+    to: 'off'
+    id: buttonOff
   condition:
   - condition: or
     conditions:
@@ -1160,11 +1203,19 @@
         domain: switch
       - condition: trigger
         id: 'off'
+    - condition: trigger
+      id: buttonOn
+    - condition: trigger
+      id: buttonOff
   action:
   - choose:
     - conditions:
-      - condition: trigger
-        id: 'on'
+      - condition: or
+        conditions:
+        - condition: trigger
+          id: 'on'
+        - condition: trigger
+          id: buttonOn
       sequence:
       - type: turn_on
         device_id: f844e99cd89ce7d7e2c6af31fa016cac
@@ -1196,8 +1247,12 @@
           entity_id: switch.oven_fan
           domain: switch
     - conditions:
-      - condition: trigger
-        id: 'off'
+      - condition: or
+        conditions:
+        - condition: trigger
+          id: 'off'
+        - condition: trigger
+          id: buttonOff
       sequence:
       - type: turn_off
         device_id: f844e99cd89ce7d7e2c6af31fa016cac
@@ -1207,3 +1262,371 @@
         data:
           screen_name: nowPlaying
   mode: restart
+- id: '1672432398857'
+  alias: Door open notificatiob
+  description: ''
+  trigger:
+  - type: opened
+    platform: device
+    device_id: f36fb888990eb4bcf83538ced292f38f
+    entity_id: binary_sensor.contact_sensor_2_contact
+    domain: binary_sensor
+  - type: opened
+    platform: device
+    device_id: 8699750034b7dcbc5571e2e28571f6ad
+    entity_id: binary_sensor.contact_sensor_contact
+    domain: binary_sensor
+  condition: []
+  action:
+  - service: notify.mobile_app_landorghini13
+    data:
+      title: Door open
+  mode: single
+- id: '1673328335958'
+  alias: Fire Tablet Battery Management
+  description: from blueprint
+  use_blueprint:
+    path: seamus65/wallpanel-battery-management.yaml
+    input:
+      battery: sensor.fire_tablet_battery
+      charger: switch.tablet_charging_switch
+      charged_percent: 70
+- id: '1675377742219'
+  alias: air quality history
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - sensor.particulate_matter_2_5um_concentration
+  condition: []
+  action:
+  - service: input_select.set_options
+    data:
+      options: '{% set dataRange = 50 %} {% set dataCount = state_attr("input_select.air_quality_history",
+        "options") | count %} {% set rangeMin = dataCount - dataRange %} {% set rangeMax
+        = min(dataCount, dataRange + rangeMin) %} {% set data = namespace(numbers=[])
+        %}{% for i in range(max(0, rangeMin + 1), rangeMax) %}{% set data.numbers
+        = data.numbers + [state_attr("input_select.air_quality_history", "options")[i]]
+        %}{% endfor %} {% set data.numbers = data.numbers + [states.sensor.particulate_matter_2_5um_concentration.state]
+        %} {{ data.numbers }}
+
+        '
+    target:
+      entity_id: input_select.air_quality_history
+  mode: single
+- id: '1675754569842'
+  alias: Monitor the state of dishwasher
+  description: ''
+  use_blueprint:
+    path: leofabri/appliance-status-monitor.yaml
+    input:
+      appliance_socket: switch.sonoff_10015d88b0
+      appliance_power_sensor: sensor.sonoff_10015d88b0_power
+      appliance_state_machine: input_select.dishwasher_state_machine
+      appliance_job_cycle: input_boolean.dishwasher_job_cycle
+      delayed_job_completion_timer: timer.dishwasher_delayed_job_completion_timer
+      automation_self_trigger: input_boolean.dishwasher_automation_self_trigger
+      actions_job_cycle_ends: []
+      delayed_job_completion_duration: 420
+- id: '1675755664609'
+  alias: Monitor the state of washing machine
+  description: ''
+  use_blueprint:
+    path: leofabri/appliance-status-monitor.yaml
+    input:
+      appliance_socket: switch.sonoff_10015d887b
+      appliance_power_sensor: sensor.sonoff_10015d887b_power
+      appliance_state_machine: input_select.washing_machine_state_machine
+      appliance_job_cycle: input_boolean.washing_machine_job_cycle
+      delayed_job_completion_timer: timer.washing_machine_delayed_job_completion_timer
+      automation_self_trigger: input_boolean.washing_machine_automation_self_trigger
+- id: '1676613352111'
+  alias: pc display switcher
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - input_select.pc_display
+    to: PC
+    id: pc
+  - platform: state
+    entity_id:
+    - input_select.pc_display
+    to: TV
+    id: tv
+  - platform: state
+    entity_id:
+    - input_select.pc_display
+    to: TVExtend
+    id: tvExtend
+  condition: []
+  action:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id: pc
+      sequence:
+      - service: script.change_display_to_pc
+        data: {}
+    - conditions:
+      - condition: trigger
+        id: tv
+      sequence:
+      - service: script.change_display_to_tv
+        data: {}
+    - conditions:
+      - condition: trigger
+        id: tvExtend
+      sequence:
+      - service: script.change_display_to_tv_extend
+        data: {}
+    default:
+    - choose:
+      - conditions:
+        - condition: state
+          entity_id: input_select.pc_display
+          state: PC
+        sequence:
+        - service: script.change_display_to_pc
+          data: {}
+      - conditions:
+        - condition: state
+          entity_id: input_select.pc_display
+          state: TV
+        sequence:
+        - service: script.change_display_to_tv
+          data: {}
+      - conditions:
+        - condition: state
+          entity_id: input_select.pc_display
+          state: TVExtend
+        sequence:
+        - service: script.change_display_to_tv_extend
+          data: {}
+  mode: single
+- id: '1677168786044'
+  alias: tent light sun toggle
+  description: turns tent light on and off based on sunrise
+  trigger:
+  - platform: time_pattern
+    minutes: /15
+  - platform: numeric_state
+    entity_id: sensor.tent_light_on_today
+    above: input_number.plant_light_hours
+  - platform: numeric_state
+    entity_id: sensor.ble_temperature
+    above: input_number.plant_temp_shutoff
+  - platform: numeric_state
+    entity_id: sensor.ble_temperature
+    below: input_number.plant_temp_shutoff
+    id: cooled
+  - platform: state
+    entity_id:
+    - input_number.plant_temp_shutoff
+  condition: []
+  action:
+  - choose:
+    - conditions:
+      - condition: and
+        conditions:
+        - condition: time
+          after: input_datetime.plant_on_time
+        - condition: numeric_state
+          entity_id: sensor.tent_light_on_today
+          below: input_number.plant_light_hours
+        - condition: numeric_state
+          entity_id: sensor.ble_temperature
+          below: input_number.plant_temp_shutoff
+      sequence:
+      - if:
+        - condition: device
+          type: is_off
+          device_id: fb17b9b0dd032204928f0a6a88348f28
+          entity_id: switch.ikea_power_outlet_2
+          domain: switch
+        then:
+        - type: turn_on
+          device_id: fb17b9b0dd032204928f0a6a88348f28
+          entity_id: switch.ikea_power_outlet_2
+          domain: switch
+        - if:
+          - condition: trigger
+            id: cooled
+          then:
+          - service: notify.mobile_app_landorghini13
+            data:
+              message: light turned on
+              title: Tent resuming from overheat
+    - conditions:
+      - condition: and
+        conditions:
+        - condition: time
+          after: input_datetime.plant_on_time
+        - condition: numeric_state
+          entity_id: sensor.tent_light_on_today
+          below: input_number.plant_light_hours
+        - condition: numeric_state
+          entity_id: sensor.ble_temperature
+          above: input_number.plant_temp_shutoff
+      sequence:
+      - type: turn_off
+        device_id: fb17b9b0dd032204928f0a6a88348f28
+        entity_id: switch.ikea_power_outlet_2
+        domain: switch
+      - service: notify.mobile_app_landorghini13
+        data:
+          title: tent overheated
+          message: turned off light
+          data:
+            push:
+              interruption-level: critical
+    default:
+    - type: turn_off
+      device_id: fb17b9b0dd032204928f0a6a88348f28
+      entity_id: switch.ikea_power_outlet_2
+      domain: switch
+  - service: climate.turn_on
+    data: {}
+    target:
+      entity_id: climate.ttgo_tent_pid_climate_controller
+  - service: climate.set_temperature
+    data:
+      temperature: 26
+    target:
+      entity_id: climate.ttgo_tent_pid_climate_controller
+  - service: climate.set_humidity
+    data:
+      humidity: 60
+    target:
+      entity_id: climate.ttgo_tent_pid_climate_controller
+  mode: single
+- id: '1677555134898'
+  alias: PC Display Revert TV Off
+  description: changes pc display back to monitor if tv is turned off or changes source
+  trigger:
+  - platform: state
+    entity_id:
+    - media_player.55_tcl_roku_tv
+    attribute: source
+    from: HDMI 2
+  - platform: device
+    device_id: b2031546510b1ac0a601400cf695f550
+    domain: media_player
+    entity_id: media_player.55_tcl_roku_tv
+    type: turned_off
+  condition:
+  - condition: and
+    conditions:
+    - condition: not
+      conditions:
+      - condition: state
+        entity_id: input_select.pc_display
+        state: PC
+  action:
+  - service: script.change_display_to_pc
+    data: {}
+  mode: single
+- id: '1678413538679'
+  alias: Bathroom Motion Fountain
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - binary_sensor.motion_sensor_occupancy
+    id: motion
+  - platform: state
+    entity_id: timer.fountain_timer
+    id: timer
+  condition: []
+  action:
+  - choose:
+    - conditions:
+      - condition: state
+        entity_id: binary_sensor.motion_sensor_occupancy
+        state: 'on'
+      sequence:
+      - type: turn_on
+        device_id: 3a1df2c4b76763425057dfb9ade6f663
+        entity_id: switch.ikea_power_switch
+        domain: switch
+      - choose:
+        - conditions:
+          - condition: and
+            conditions:
+            - condition: device
+              device_id: 90e98d1ecee56bc8a850ac059eb531d3
+              domain: media_player
+              entity_id: media_player.beam
+              type: is_playing
+            - condition: state
+              entity_id: media_player.beam
+              attribute: media_content_type
+              state: music
+            - condition: not
+              conditions:
+              - condition: device
+                device_id: 957d7ad9526a360f8ae9894d06373558
+                domain: media_player
+                entity_id: media_player.office_tts
+                type: is_playing
+          sequence:
+          - service: media_player.join
+            data:
+              group_members:
+              - media_player.office
+            target:
+              entity_id: media_player.beam
+          - service: media_player.volume_set
+            data:
+              volume_level: 0.5
+            target:
+              entity_id: media_player.office
+    - conditions:
+      - condition: state
+        entity_id: binary_sensor.motion_sensor_occupancy
+        state: 'off'
+      - condition: trigger
+        id: timer
+      sequence:
+      - type: turn_off
+        device_id: 3a1df2c4b76763425057dfb9ade6f663
+        entity_id: switch.ikea_power_switch
+        domain: switch
+    default: []
+  mode: single
+- id: '1678548571432'
+  alias: Desk Height Toggle
+  description: ''
+  trigger:
+  - platform: device
+    domain: mqtt
+    device_id: bb469a62ef86978fe07e9e4c7ef910e9
+    type: action
+    subtype: 'on'
+    discovery_id: 0x84fd27fffeae4b28 action_on
+  condition: []
+  action:
+  - service: script.set_desk_height
+    data:
+      height: toggle
+  mode: single
+- id: '1679889683243'
+  alias: rgb light effect
+  description: ''
+  trigger:
+  - platform: time_pattern
+    seconds: /5
+  condition: []
+  action:
+  - service: light.turn_on
+    data:
+      transition: 4.5
+      hs_color: '({{ (((as_timestamp(now())) % (360 / states.input_number.rgb_effect_speed.state
+        | float)) * states.input_number.rgb_effect_speed.state | float) | round(0)
+        }}, 100)
+
+        '
+    target:
+      entity_id: light.rgb_lights
+  mode: queued
+  max: 2

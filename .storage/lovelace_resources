@@ -15,7 +15,7 @@
         "id": "76adb7a9fcbb436aa5f9c67e3b0212e1"
       },
       {
-        "url": "/hacsfiles/mini-media-player/mini-media-player-bundle.js?hacstag=1485208381164",
+        "url": "/hacsfiles/mini-media-player/mini-media-player-bundle.js?hacstag=1485208381165",
         "type": "module",
         "id": "1d04f593758847e7a16d25ab138c6185"
       },
@@ -30,7 +30,7 @@
         "id": "e0ba2427afa84bfdadd014d04fe6e54e"
       },
       {
-        "url": "/hacsfiles/scheduler-card/scheduler-card.js?hacstag=286270157237",
+        "url": "/hacsfiles/scheduler-card/scheduler-card.js?hacstag=286270157328",
         "type": "module",
         "id": "ec5523ce53674252a56ca47390dd53fc"
       },
@@ -45,11 +45,6 @@
         "id": "0f8b949c2fa349939104e6c292a4399b"
       },
       {
-        "url": "/hacsfiles/home-assistant-sun-card/home-assistant-sun-card.js?hacstag=366482637014",
-        "type": "module",
-        "id": "69b28f47a6094879b7781274f3a36fd3"
-      },
-      {
         "url": "/hacsfiles/weather-card/weather-card.js?hacstag=192732636150",
         "type": "module",
         "id": "69ac20c355a94826abbeba6aa225df72"
@@ -60,7 +55,7 @@
         "id": "1362af8962864634a8a87a482bdfa093"
       },
       {
-        "url": "/hacsfiles/atomic-calendar-revive/atomic-calendar-revive.js?hacstag=246549747701",
+        "url": "/hacsfiles/atomic-calendar-revive/atomic-calendar-revive.js?hacstag=246549747720",
         "type": "module",
         "id": "f92bc8c4afbc492e9d7e0d091d0a4d3f"
       },
@@ -70,7 +65,7 @@
         "id": "57fb9dc81a4b41978a8a7fe3f32eee49"
       },
       {
-        "url": "/hacsfiles/lovelace-slider-entity-row/slider-entity-row.js?hacstag=1448997001721",
+        "url": "/hacsfiles/lovelace-slider-entity-row/slider-entity-row.js?hacstag=1448997001730",
         "type": "module",
         "id": "cfe2732a1757423eb9999e34337baf10"
       },
@@ -85,7 +80,7 @@
         "id": "21885d7246a845fd84d696efebdf8214"
       },
       {
-        "url": "/hacsfiles/lovelace-card-mod/card-mod.js?hacstag=190927524315",
+        "url": "/hacsfiles/lovelace-card-mod/card-mod.js?hacstag=190927524320",
         "type": "module",
         "id": "db18131802b4448fa44c5fb4cec4052d"
       },
@@ -100,7 +95,7 @@
         "id": "0b175e9c8b7e4d298bf9039417cdc2c0"
       },
       {
-        "url": "/hacsfiles/lovelace-mushroom/mushroom.js?hacstag=444350375213",
+        "url": "/hacsfiles/lovelace-mushroom/mushroom.js?hacstag=444350375261",
         "type": "module",
         "id": "7c56fb254eeb4268ad3e3181c07b5597"
       },
@@ -113,6 +108,21 @@
         "url": "/hacsfiles/bar-card/bar-card.js?hacstag=163363577320",
         "type": "module",
         "id": "744a748c0c834962a3564e90dd4d59a0"
+      },
+      {
+        "url": "/hacsfiles/lovelace-grocy-chores-card/grocy-chores-card.js?hacstag=195671060351",
+        "type": "module",
+        "id": "d74e938f9afa461bab2fb32399b33c99"
+      },
+      {
+        "url": "/hacsfiles/lovelace-card-tools/card-tools.js?hacstag=16140332811",
+        "type": "module",
+        "id": "6dc7aeb5ff2341b78e74bbfecfd6556d"
+      },
+      {
+        "url": "/hacsfiles/formulaone-card/formulaone-card.js?hacstag=545945955142",
+        "type": "module",
+        "id": "0b85656a3b964114b890755dbd9406f4"
       }
     ]
   }

@@ -1,13 +1,6 @@
 - id: '1627185939199'
   name: 'off'
   entities:
-    light.the_orb:
-      supported_color_modes:
-      - brightness
-      - hs
-      friendly_name: The Orb
-      supported_features: 0
-      state: 'off'
     light.bathroom_lights:
       supported_color_modes:
       - onoff
@@ -29,7 +22,6 @@
     switch.adaptive_lighting_default:
       brightness_pct:
       color_temp_kelvin:
-      color_temp_mired:
       rgb_color:
       xy_color:
       hs_color:
@@ -49,28 +41,49 @@
       icon: mdi:theme-light-dark
       friendly_name: 'Adaptive Lighting Sleep Mode: Default'
       state: 'off'
+    switch.oven_fan:
+      friendly_name: Oven Fan
+      state: 'off'
+    automation.rgb_light_effect:
+      last_triggered: '2023-03-27T12:48:40.054516+00:00'
+      mode: queued
+      current: 0
+      max: 2
+      id: '1679889683243'
+      friendly_name: rgb light effect
+      state: 'off'
+    switch.fire_tablet_screen:
+      friendly_name: Fire Tablet Screen
+      state: 'off'
+    number.fire_tablet_screen_off_timer:
+      min: 0
+      max: 9999
+      step: 1
+      mode: auto
+      unit_of_measurement: s
+      friendly_name: Fire Tablet Screen off timer
+      state: '0'
+    number.fire_tablet_screen_brightness:
+      min: 0
+      max: 255
+      step: 1
+      mode: auto
+      friendly_name: Fire Tablet Screen brightness
+      state: '12'
+  metadata:
+    switch.oven_fan:
+      entity_only: true
+    automation.rgb_light_effect:
+      entity_only: true
+    switch.fire_tablet_screen:
+      entity_only: true
+    number.fire_tablet_screen_off_timer:
+      entity_only: true
+    number.fire_tablet_screen_brightness:
+      entity_only: true
 - id: '1627186121788'
   name: colors
   entities:
-    light.the_orb:
-      supported_color_modes:
-      - brightness
-      - hs
-      color_mode: hs
-      brightness: 92
-      hs_color:
-      - 269.749
-      - 100
-      rgb_color:
-      - 126
-      - 0
-      - 255
-      xy_color:
-      - 0.216
-      - 0.077
-      friendly_name: The Orb
-      supported_features: 0
-      state: 'on'
     light.kitchen_track_lights:
       supported_color_modes:
       - onoff
@@ -80,14 +93,13 @@
     light.kitchen_counter_lights:
       supported_color_modes:
       - onoff
-      color_mode: onoff
       friendly_name: Kitchen Counter Lights
       supported_features: 0
+      color_mode: onoff
       state: 'on'
     switch.adaptive_lighting_default:
       brightness_pct:
       color_temp_kelvin:
-      color_temp_mired:
       rgb_color:
       xy_color:
       hs_color:
@@ -107,43 +119,46 @@
       icon: mdi:theme-light-dark
       friendly_name: 'Adaptive Lighting Sleep Mode: Default'
       state: 'off'
+    switch.fire_tablet_screen:
+      friendly_name: Fire Tablet Screen
+      state: 'on'
+    number.fire_tablet_screen_brightness:
+      min: 0
+      max: 255
+      step: 1
+      mode: auto
+      friendly_name: Fire Tablet Screen brightness
+      state: '84'
+    number.fire_tablet_screen_off_timer:
+      min: 0
+      max: 9999
+      step: 1
+      mode: auto
+      unit_of_measurement: s
+      friendly_name: Fire Tablet Screen off timer
+      state: '0'
   metadata:
-    light.the_orb:
-      entity_only: false
     light.kitchen_track_lights:
       entity_only: true
     light.kitchen_counter_lights:
       entity_only: true
     switch.adaptive_lighting_default:
       entity_only: true
-    switch.adaptive_lighting_sleep_mode_default:
+    switch.adaptive_lighting_adapt_brightness_default:
       entity_only: true
     switch.adaptive_lighting_adapt_color_default:
       entity_only: true
-    switch.adaptive_lighting_adapt_brightness_default:
+    switch.adaptive_lighting_sleep_mode_default:
+      entity_only: true
+    switch.fire_tablet_screen:
+      entity_only: true
+    number.fire_tablet_screen_brightness:
+      entity_only: true
+    number.fire_tablet_screen_off_timer:
       entity_only: true
 - id: '1627278295682'
   name: warm
   entities:
-    light.the_orb:
-      supported_color_modes:
-      - brightness
-      - hs
-      friendly_name: The Orb
-      supported_features: 0
-      color_mode: hs
-      brightness: 255
-      hs_color:
-      - 224.624
-      - 100
-      rgb_color:
-      - 0
-      - 65
-      - 255
-      xy_color:
-      - 0.137
-      - 0.067
-      state: 'on'
     light.kitchen_track_lights:
       supported_color_modes:
       - onoff
@@ -160,19 +175,18 @@
       state: 'on'
     switch.adaptive_lighting_default:
       brightness_pct: 100
-      color_temp_kelvin: 5386.738913982923
-      color_temp_mired: 185
+      color_temp_kelvin: 3445
       rgb_color:
       - 255
-      - 235.42329992861687
-      - 218.7144632373229
+      - 190.95823257193535
+      - 137.74517233786867
       xy_color:
-      - 0.357
-      - 0.345
+      - 0.458
+      - 0.375
       hs_color:
-      - 27.568
-      - 14.51
-      sun_position: 0.9676396897094067
+      - 27.179
+      - 45.882
+      sun_position: 0.6315228810872755
       icon: mdi:theme-light-dark
       friendly_name: 'Adaptive Lighting: Default'
       manual_control: []
@@ -189,305 +203,34 @@
       icon: mdi:theme-light-dark
       friendly_name: 'Adaptive Lighting Sleep Mode: Default'
       state: 'off'
+    switch.fire_tablet_screen:
+      friendly_name: Fire Tablet Screen
+      state: 'off'
+    number.fire_tablet_screen_brightness:
+      min: 0
+      max: 255
+      step: 1
+      mode: auto
+      friendly_name: Fire Tablet Screen brightness
+      state: '188'
+    number.fire_tablet_screen_off_timer:
+      min: 0
+      max: 9999
+      step: 1
+      mode: auto
+      unit_of_measurement: s
+      friendly_name: Fire Tablet Screen off timer
+      state: '20'
+  metadata:
+    switch.fire_tablet_screen:
+      entity_only: true
+    number.fire_tablet_screen_brightness:
+      entity_only: true
+    number.fire_tablet_screen_off_timer:
+      entity_only: true
 - id: '1647230575187'
   name: hell
   entities:
-    light.living_room_lamp_small:
-      min_mireds: 250
-      max_mireds: 454
-      effect_list:
-      - blink
-      - breathe
-      - okay
-      - channel_change
-      - finish_effect
-      - stop_effect
-      supported_color_modes:
-      - color_temp
-      - xy
-      color:
-        h: 0
-        hue: 0
-        s: 100
-        saturation: 100
-        x: 0.701
-        y: 0.299
-      level_config:
-        on_level: previous
-      linkquality: 102
-      power_on_behavior:
-      update:
-        state: idle
-      update_available: false
-      friendly_name: Living Room Lamp Small
-      supported_features: 63
-      color_mode: xy
-      brightness: 255
-      hs_color:
-      - 0
-      - 100
-      rgb_color:
-      - 255
-      - 0
-      - 0
-      xy_color:
-      - 0.701
-      - 0.299
-      state: 'on'
-    light.the_orb:
-      supported_color_modes:
-      - brightness
-      - hs
-      friendly_name: The Orb
-      supported_features: 0
-      color_mode: hs
-      brightness: 146
-      hs_color:
-      - 360
-      - 100
-      rgb_color:
-      - 255
-      - 0
-      - 0
-      xy_color:
-      - 0.701
-      - 0.299
-      state: 'on'
-    light.kitchen_light_2:
-      min_mireds: 250
-      max_mireds: 454
-      effect_list:
-      - blink
-      - breathe
-      - okay
-      - channel_change
-      - finish_effect
-      - stop_effect
-      supported_color_modes:
-      - color_temp
-      - xy
-      color:
-        h: 0
-        hue: 0
-        s: 100
-        saturation: 100
-        x: 0.701
-        y: 0.299
-      level_config:
-        on_level: previous
-      linkquality: 134
-      power_on_behavior: 'on'
-      update:
-        state: idle
-      update_available: false
-      friendly_name: Kitchen Light 2
-      supported_features: 63
-      color_mode: xy
-      brightness: 255
-      hs_color:
-      - 0
-      - 100
-      rgb_color:
-      - 255
-      - 0
-      - 0
-      xy_color:
-      - 0.701
-      - 0.299
-      state: 'on'
-    light.kitchen_light_1:
-      min_mireds: 250
-      max_mireds: 454
-      effect_list:
-      - blink
-      - breathe
-      - okay
-      - channel_change
-      - finish_effect
-      - stop_effect
-      supported_color_modes:
-      - color_temp
-      - xy
-      color:
-        h: 0
-        hue: 0
-        s: 100
-        saturation: 100
-        x: 0.701
-        y: 0.299
-      level_config:
-        on_level: previous
-      linkquality: 153
-      power_on_behavior: 'on'
-      update:
-        state: idle
-      update_available: false
-      friendly_name: Kitchen Light 1
-      supported_features: 63
-      color_mode: xy
-      brightness: 255
-      hs_color:
-      - 0
-      - 100
-      rgb_color:
-      - 255
-      - 0
-      - 0
-      xy_color:
-      - 0.701
-      - 0.299
-      state: 'on'
-    light.nightstand_lamp_b:
-      min_mireds: 250
-      max_mireds: 454
-      effect_list:
-      - blink
-      - breathe
-      - okay
-      - channel_change
-      - finish_effect
-      - stop_effect
-      supported_color_modes:
-      - color_temp
-      - xy
-      color:
-        h: 0
-        hue: 0
-        s: 100
-        saturation: 100
-        x: 0.701
-        y: 0.299
-      level_config:
-        on_level: previous
-      linkquality: 127
-      power_on_behavior: 'on'
-      update:
-        state: idle
-      update_available: false
-      friendly_name: Nightstand Lamp B
-      supported_features: 63
-      color_mode: xy
-      brightness: 255
-      hs_color:
-      - 0
-      - 100
-      rgb_color:
-      - 255
-      - 0
-      - 0
-      xy_color:
-      - 0.701
-      - 0.299
-      state: 'on'
-    light.living_room_lamp_big:
-      min_mireds: 250
-      max_mireds: 454
-      effect_list:
-      - blink
-      - breathe
-      - okay
-      - channel_change
-      - finish_effect
-      - stop_effect
-      supported_color_modes:
-      - color_temp
-      - xy
-      color:
-        h: 0
-        hue: 0
-        s: 100
-        saturation: 100
-        x: 0.701
-        y: 0.299
-      level_config:
-        on_level: previous
-      linkquality: 120
-      power_on_behavior: 'on'
-      update:
-        state: idle
-      update_available: false
-      friendly_name: Living Room Lamp Big
-      supported_features: 63
-      color_mode: xy
-      brightness: 255
-      hs_color:
-      - 0
-      - 100
-      rgb_color:
-      - 255
-      - 0
-      - 0
-      xy_color:
-      - 0.701
-      - 0.299
-      state: 'on'
-    light.office_lamp:
-      min_mireds: 250
-      max_mireds: 454
-      effect_list:
-      - blink
-      - breathe
-      - okay
-      - channel_change
-      - finish_effect
-      - stop_effect
-      supported_color_modes:
-      - color_temp
-      - xy
-      color:
-        h: 0
-        hue: 0
-        s: 100
-        saturation: 100
-        x: 0.701
-        y: 0.299
-      level_config:
-        on_level: previous
-      linkquality: 163
-      power_on_behavior:
-      update:
-        state: idle
-      update_available: false
-      friendly_name: Office Lamp
-      supported_features: 63
-      color_mode: xy
-      brightness: 255
-      hs_color:
-      - 0
-      - 100
-      rgb_color:
-      - 255
-      - 0
-      - 0
-      xy_color:
-      - 0.701
-      - 0.299
-      state: 'on'
-    select.office_lamp_power_on_behavior:
-      options:
-      - 'off'
-      - previous
-      - 'on'
-      brightness: 254
-      color:
-        h: 0
-        hue: 0
-        s: 100
-        saturation: 100
-        x: 0.701
-        y: 0.299
-      color_mode: xy
-      color_temp: 250
-      level_config:
-        on_level: previous
-      linkquality: 163
-      power_on_behavior:
-      update:
-        state: idle
-      update_available: false
-      icon: mdi:power-settings
-      friendly_name: Office Lamp power on behavior
-      state: unknown
     light.kitchen_counter_lights:
       supported_color_modes:
       - onoff
@@ -501,9 +244,510 @@
       supported_features: 0
       state: 'off'
     switch.adaptive_lighting_default:
+      icon: mdi:theme-light-dark
+      friendly_name: 'Adaptive Lighting: Default'
+      state: 'off'
+    input_select.lr_scene:
+      options:
+      - dim
+      - colors
+      - offScene
+      - warm
+      - bright
+      - hell
+      editable: false
+      state: hell
+    light.rgb_lights:
+      min_color_temp_kelvin: 2202
+      max_color_temp_kelvin: 4000
+      min_mireds: 250
+      max_mireds: 454
+      effect_list:
+      - blink
+      - breathe
+      - okay
+      - channel_change
+      - finish_effect
+      - stop_effect
+      supported_color_modes:
+      - color_temp
+      - xy
+      friendly_name: rgb lights
+      supported_features: 44
+      color_mode: xy
+      brightness: 131
+      hs_color:
+      - 358.543
+      - 96.863
+      rgb_color:
+      - 255
+      - 8
+      - 14
+      xy_color:
+      - 0.698
+      - 0.299
+      color:
+        h: 0
+        hue: 0
+        s: 100
+        saturation: 100
+        x: 0.698
+        y: 0.299
+      state: 'on'
+    switch.fire_tablet_screen:
+      friendly_name: Fire Tablet Screen
+      state: 'off'
+    number.fire_tablet_screen_brightness:
+      min: 0
+      max: 255
+      step: 1
+      mode: auto
+      friendly_name: Fire Tablet Screen brightness
+      state: '12'
+    number.fire_tablet_screen_off_timer:
+      min: 0
+      max: 9999
+      step: 1
+      mode: auto
+      unit_of_measurement: s
+      friendly_name: Fire Tablet Screen off timer
+      state: '20'
+  icon: mdi:fire
+  metadata:
+    light.kitchen_counter_lights:
+      entity_only: true
+    light.kitchen_track_lights:
+      entity_only: true
+    switch.adaptive_lighting_default:
+      entity_only: true
+    input_select.lr_scene:
+      entity_only: true
+    switch.fire_tablet_screen:
+      entity_only: true
+    number.fire_tablet_screen_brightness:
+      entity_only: true
+    number.fire_tablet_screen_off_timer:
+      entity_only: true
+- id: '1662180091964'
+  name: bright
+  entities:
+    light.kitchen_track_lights:
+      supported_color_modes:
+      - onoff
+      friendly_name: Kitchen Track Lights
+      supported_features: 0
+      color_mode: onoff
+      state: 'on'
+    light.kitchen_counter_lights:
+      supported_color_modes:
+      - onoff
+      friendly_name: Kitchen Counter Lights
+      supported_features: 0
+      color_mode: onoff
+      state: 'on'
+    switch.adaptive_lighting_default:
       brightness_pct:
       color_temp_kelvin:
-      color_temp_mired:
+      rgb_color:
+      xy_color:
+      hs_color:
+      sun_position:
+      icon: mdi:theme-light-dark
+      friendly_name: 'Adaptive Lighting: Default'
+      state: 'off'
+    switch.adaptive_lighting_adapt_color_default:
+      icon: mdi:theme-light-dark
+      friendly_name: 'Adaptive Lighting Adapt Color: Default'
+      state: 'on'
+    switch.adaptive_lighting_adapt_brightness_default:
+      icon: mdi:theme-light-dark
+      friendly_name: 'Adaptive Lighting Adapt Brightness: Default'
+      state: 'on'
+    switch.adaptive_lighting_sleep_mode_default:
+      icon: mdi:theme-light-dark
+      friendly_name: 'Adaptive Lighting Sleep Mode: Default'
+      state: 'off'
+    light.all_lights:
+      min_color_temp_kelvin: 2202
+      max_color_temp_kelvin: 4000
+      min_mireds: 250
+      max_mireds: 454
+      effect_list:
+      - blink
+      - breathe
+      - channel_change
+      - finish_effect
+      - okay
+      - stop_effect
+      supported_color_modes:
+      - color_temp
+      - onoff
+      - xy
+      color_mode: color_temp
+      brightness: 255
+      hs_color:
+      - 27.911
+      - 58.298
+      rgb_color:
+      - 255
+      - 175
+      - 106
+      xy_color:
+      - 0.501
+      - 0.384
+      entity_id:
+      - light.bathroom_light_switch
+      - light.bedroom_light
+      - light.office_lamp
+      - light.kitchen_track_lights
+      - light.kitchen_light_1
+      - light.kitchen_light_2
+      - light.kitchen_counter_lights
+      - light.living_room_lamp_big
+      - light.living_room_lamp_small
+      - light.living_room_shelf_light
+      - light.nightstand_lamp
+      - light.living_room_lamp_back
+      icon: mdi:lightbulb-group
+      friendly_name: All Lights
+      supported_features: 44
+      color_temp_kelvin: 2949
+      color_temp: 339
+      state: 'on'
+    switch.fire_tablet_screen:
+      friendly_name: Fire Tablet Screen
+      state: 'on'
+    number.fire_tablet_screen_brightness:
+      min: 0
+      max: 255
+      step: 1
+      mode: auto
+      friendly_name: Fire Tablet Screen brightness
+      state: '255'
+    number.fire_tablet_screen_off_timer:
+      min: 0
+      max: 9999
+      step: 1
+      mode: auto
+      unit_of_measurement: s
+      friendly_name: Fire Tablet Screen off timer
+      state: '0'
+  metadata:
+    light.all_lights:
+      entity_only: true
+    switch.fire_tablet_screen:
+      entity_only: true
+    number.fire_tablet_screen_brightness:
+      entity_only: true
+    number.fire_tablet_screen_off_timer:
+      entity_only: true
+- id: '1665531956243'
+  name: dim
+  entities:
+    light.living_room_lamp_small:
+      min_color_temp_kelvin: 2202
+      max_color_temp_kelvin: 4000
+      min_mireds: 250
+      max_mireds: 454
+      effect_list:
+      - blink
+      - breathe
+      - okay
+      - channel_change
+      - finish_effect
+      - stop_effect
+      supported_color_modes:
+      - color_temp
+      - xy
+      color_mode: color_temp
+      brightness: 3
+      hs_color:
+      - 29.79
+      - 84.553
+      rgb_color:
+      - 255
+      - 146
+      - 39
+      xy_color:
+      - 0.579
+      - 0.388
+      color:
+        h: 27
+        hue: 27
+        s: 92
+        saturation: 92
+        x: 0.5056
+        y: 0.4152
+      level_config:
+        on_level: previous
+      linkquality: 105
+      power_on_behavior:
+      update:
+        installed_version: -1
+        latest_version: -1
+        state: idle
+      update_available: false
+      friendly_name: Living Room Lamp Small
+      supported_features: 44
+      color_temp_kelvin: 2202
+      color_temp: 454
+      state: 'on'
+    light.kitchen_light_2:
+      min_color_temp_kelvin: 2202
+      max_color_temp_kelvin: 4000
+      min_mireds: 250
+      max_mireds: 454
+      effect_list:
+      - blink
+      - breathe
+      - okay
+      - channel_change
+      - finish_effect
+      - stop_effect
+      supported_color_modes:
+      - color_temp
+      - xy
+      color_mode: color_temp
+      brightness: 3
+      hs_color:
+      - 29.79
+      - 84.553
+      rgb_color:
+      - 255
+      - 146
+      - 39
+      xy_color:
+      - 0.579
+      - 0.388
+      color:
+        h: 27
+        hue: 27
+        s: 92
+        saturation: 92
+        x: 0.5056
+        y: 0.4152
+      level_config:
+        on_level: previous
+      linkquality: 102
+      power_on_behavior: 'on'
+      update:
+        installed_version: -1
+        latest_version: -1
+        state: idle
+      update_available: false
+      friendly_name: Kitchen Light 2
+      supported_features: 44
+      color_temp_kelvin: 2202
+      color_temp: 454
+      state: 'on'
+    light.kitchen_light_1:
+      min_color_temp_kelvin: 2202
+      max_color_temp_kelvin: 4000
+      min_mireds: 250
+      max_mireds: 454
+      effect_list:
+      - blink
+      - breathe
+      - okay
+      - channel_change
+      - finish_effect
+      - stop_effect
+      supported_color_modes:
+      - color_temp
+      - xy
+      color_mode: color_temp
+      brightness: 3
+      hs_color:
+      - 29.79
+      - 84.553
+      rgb_color:
+      - 255
+      - 146
+      - 39
+      xy_color:
+      - 0.579
+      - 0.388
+      color:
+        h: 27
+        hue: 27
+        s: 92
+        saturation: 92
+        x: 0.5056
+        y: 0.4152
+      level_config:
+        on_level: previous
+      linkquality: 160
+      power_on_behavior: 'on'
+      update:
+        installed_version: -1
+        latest_version: -1
+        state: idle
+      update_available: false
+      friendly_name: Kitchen Light 1
+      supported_features: 44
+      color_temp_kelvin: 2202
+      color_temp: 454
+      state: 'on'
+    light.nightstand_lamp:
+      min_color_temp_kelvin: 2202
+      max_color_temp_kelvin: 4000
+      min_mireds: 250
+      max_mireds: 454
+      effect_list:
+      - blink
+      - breathe
+      - okay
+      - channel_change
+      - finish_effect
+      - stop_effect
+      supported_color_modes:
+      - color_temp
+      - xy
+      color_mode: color_temp
+      brightness: 3
+      hs_color:
+      - 29.79
+      - 84.553
+      rgb_color:
+      - 255
+      - 146
+      - 39
+      xy_color:
+      - 0.579
+      - 0.388
+      color:
+        h: 27
+        hue: 27
+        s: 92
+        saturation: 92
+        x: 0.5056
+        y: 0.4152
+      level_config:
+        on_level: previous
+      linkquality: 98
+      power_on_behavior: 'on'
+      update:
+        installed_version: -1
+        latest_version: -1
+        state: idle
+      update_available: false
+      friendly_name: Nightstand Lamp
+      supported_features: 44
+      color_temp_kelvin: 2202
+      color_temp: 454
+      state: 'on'
+    light.living_room_lamp_big:
+      min_color_temp_kelvin: 2202
+      max_color_temp_kelvin: 4000
+      min_mireds: 250
+      max_mireds: 454
+      effect_list:
+      - blink
+      - breathe
+      - okay
+      - channel_change
+      - finish_effect
+      - stop_effect
+      supported_color_modes:
+      - color_temp
+      - xy
+      color_mode: color_temp
+      brightness: 3
+      hs_color:
+      - 29.79
+      - 84.553
+      rgb_color:
+      - 255
+      - 146
+      - 39
+      xy_color:
+      - 0.579
+      - 0.388
+      color:
+        h: 27
+        hue: 27
+        s: 92
+        saturation: 92
+        x: 0.5056
+        y: 0.4152
+      level_config:
+        on_level: previous
+      linkquality: 153
+      power_on_behavior: 'on'
+      update:
+        installed_version: -1
+        latest_version: -1
+        state: idle
+      update_available: false
+      friendly_name: Living Room Lamp Big
+      supported_features: 44
+      color_temp_kelvin: 2202
+      color_temp: 454
+      state: 'on'
+    light.office_lamp:
+      min_color_temp_kelvin: 2202
+      max_color_temp_kelvin: 4000
+      min_mireds: 250
+      max_mireds: 454
+      effect_list:
+      - blink
+      - breathe
+      - okay
+      - channel_change
+      - finish_effect
+      - stop_effect
+      supported_color_modes:
+      - color_temp
+      - xy
+      color_mode: color_temp
+      brightness: 3
+      hs_color:
+      - 29.79
+      - 84.553
+      rgb_color:
+      - 255
+      - 146
+      - 39
+      xy_color:
+      - 0.579
+      - 0.388
+      color:
+        h: 27
+        hue: 27
+        s: 92
+        saturation: 92
+        x: 0.5056
+        y: 0.4152
+      level_config:
+        on_level: previous
+      linkquality: 98
+      power_on_behavior:
+      update:
+        installed_version: -1
+        latest_version: -1
+        state: idle
+      update_available: false
+      friendly_name: Office Lamp
+      supported_features: 44
+      color_temp_kelvin: 2202
+      color_temp: 454
+      state: 'on'
+    light.kitchen_counter_lights:
+      supported_color_modes:
+      - onoff
+      friendly_name: Kitchen Counter Lights
+      supported_features: 0
+      color_mode: onoff
+      state: 'on'
+    light.kitchen_track_lights:
+      supported_color_modes:
+      - onoff
+      friendly_name: Kitchen Track Lights
+      supported_features: 0
+      state: 'off'
+    switch.adaptive_lighting_default:
+      brightness_pct:
+      color_temp_kelvin:
       rgb_color:
       xy_color:
       hs_color:
@@ -520,21 +764,32 @@
       editable: false
       state: colors
     light.bedroom_light:
+      min_color_temp_kelvin: 2202
+      max_color_temp_kelvin: 4000
       min_mireds: 250
       max_mireds: 454
+      effect_list:
+      - blink
+      - breathe
+      - okay
+      - channel_change
+      - finish_effect
+      - stop_effect
       supported_color_modes:
       - color_temp
       color:
-        h: 27
-        hue: 27
-        s: 92
-        saturation: 92
-        x: 0.5056
-        y: 0.4152
+        h: 34
+        hue: 34
+        s: 76
+        saturation: 76
+        x: 0.4405
+        y: 0.4053
       friendly_name: Bedroom Light
-      supported_features: 43
+      supported_features: 44
       state: 'off'
     light.living_room_lamp_back:
+      min_color_temp_kelvin: 2202
+      max_color_temp_kelvin: 4000
       min_mireds: 250
       max_mireds: 454
       effect_list:
@@ -547,35 +802,58 @@
       supported_color_modes:
       - color_temp
       - xy
-      friendly_name: Living Room Lamp Back
-      supported_features: 63
-      color:
-        h: 0
-        hue: 0
-        s: 100
-        saturation: 100
-        x: 0.701
-        y: 0.299
-      linkquality: 109
-      update:
-        state: idle
-      update_available: false
-      level_config:
-        on_level: previous
-      color_mode: xy
-      brightness: 255
+      color_mode: color_temp
+      brightness: 3
       hs_color:
-      - 0
-      - 100
+      - 29.79
+      - 84.553
       rgb_color:
       - 255
-      - 0
-      - 0
+      - 146
+      - 39
       xy_color:
-      - 0.701
-      - 0.299
+      - 0.579
+      - 0.388
+      color:
+        h: 27
+        hue: 27
+        s: 92
+        saturation: 92
+        x: 0.5056
+        y: 0.4152
+      level_config:
+        on_level: previous
+      linkquality: 102
+      power_on_behavior:
+      update:
+        installed_version: -1
+        latest_version: -1
+        state: idle
+      update_available: false
+      friendly_name: Living Room Lamp Back
+      supported_features: 44
+      color_temp_kelvin: 2202
+      color_temp: 454
       state: 'on'
-  icon: mdi:fire
+    number.fire_tablet_screen_brightness:
+      min: 0
+      max: 255
+      step: 1
+      mode: auto
+      friendly_name: Fire Tablet Screen brightness
+      state: '23'
+    switch.fire_tablet_screen:
+      friendly_name: Fire Tablet Screen
+      state: 'on'
+    number.fire_tablet_screen_off_timer:
+      min: 0
+      max: 9999
+      step: 1
+      mode: auto
+      unit_of_measurement: s
+      friendly_name: Fire Tablet Screen off timer
+      state: '20'
+  icon: mdi:sleep
   metadata:
     light.kitchen_counter_lights:
       entity_only: true
@@ -585,179 +863,9 @@
       entity_only: true
     input_select.lr_scene:
       entity_only: true
-- id: '1653762459127'
-  name: dim
-  entities:
-    light.the_orb:
-      supported_color_modes:
-      - brightness
-      - hs
-      friendly_name: The Orb
-      supported_features: 0
-      color_mode: hs
-      brightness: 255
-      hs_color:
-      - 224.624
-      - 100
-      rgb_color:
-      - 0
-      - 65
-      - 255
-      xy_color:
-      - 0.137
-      - 0.067
-      state: 'on'
-    light.kitchen_track_lights:
-      supported_color_modes:
-      - onoff
-      friendly_name: Kitchen Track Lights
-      supported_features: 0
-      state: 'off'
-    light.kitchen_counter_lights:
-      supported_color_modes:
-      - onoff
-      friendly_name: Kitchen Counter Lights
-      supported_features: 0
-      color_mode: onoff
-      state: 'on'
-    switch.adaptive_lighting_default:
-      brightness_pct: 1
-      color_temp_kelvin: 1000
-      color_temp_mired: 1000
-      rgb_color:
-      - 255
-      - 67.92041905680745
-      - 0
-      xy_color:
-      - 0.673
-      - 0.322
-      hs_color:
-      - 16.016
-      - 98.431
-      sun_position: 0.9716306857396964
-      icon: mdi:theme-light-dark
-      friendly_name: 'Adaptive Lighting: Default'
-      manual_control: []
-      state: 'on'
-    switch.adaptive_lighting_adapt_color_default:
-      icon: mdi:theme-light-dark
-      friendly_name: 'Adaptive Lighting Adapt Color: Default'
-      state: 'on'
-    switch.adaptive_lighting_adapt_brightness_default:
-      icon: mdi:theme-light-dark
-      friendly_name: 'Adaptive Lighting Adapt Brightness: Default'
-      state: 'on'
-    switch.adaptive_lighting_sleep_mode_default:
-      icon: mdi:theme-light-dark
-      friendly_name: 'Adaptive Lighting Sleep Mode: Default'
-      state: 'on'
-- id: '1662180091964'
-  name: bright
-  entities:
-    light.the_orb:
-      supported_color_modes:
-      - brightness
-      - hs
-      color_mode: hs
-      brightness: 255
-      hs_color:
-      - 28.078
-      - 58.228
-      rgb_color:
-      - 255
-      - 176
-      - 106
-      xy_color:
-      - 0.5
-      - 0.385
-      friendly_name: The Orb
-      supported_features: 0
-      state: 'on'
-    light.kitchen_track_lights:
-      supported_color_modes:
-      - onoff
-      friendly_name: Kitchen Track Lights
-      supported_features: 0
-      color_mode: onoff
-      state: 'on'
-    light.kitchen_counter_lights:
-      supported_color_modes:
-      - onoff
-      friendly_name: Kitchen Counter Lights
-      supported_features: 0
-      color_mode: onoff
-      state: 'on'
-    switch.adaptive_lighting_default:
-      brightness_pct:
-      color_temp_kelvin:
-      color_temp_mired:
-      rgb_color:
-      xy_color:
-      hs_color:
-      sun_position:
-      icon: mdi:theme-light-dark
-      friendly_name: 'Adaptive Lighting: Default'
-      state: 'off'
-    switch.adaptive_lighting_adapt_color_default:
-      icon: mdi:theme-light-dark
-      friendly_name: 'Adaptive Lighting Adapt Color: Default'
-      state: 'on'
-    switch.adaptive_lighting_adapt_brightness_default:
-      icon: mdi:theme-light-dark
-      friendly_name: 'Adaptive Lighting Adapt Brightness: Default'
-      state: 'on'
-    switch.adaptive_lighting_sleep_mode_default:
-      icon: mdi:theme-light-dark
-      friendly_name: 'Adaptive Lighting Sleep Mode: Default'
-      state: 'off'
-    light.all_lights:
-      supported_color_modes:
-      - brightness
-      - color_temp
-      - hs
-      - onoff
-      - xy
-      icon: mdi:lightbulb-group
-      friendly_name: All Lights
-      supported_features: 44
-      min_mireds: 250
-      max_mireds: 454
-      effect_list:
-      - blink
-      - breathe
-      - channel_change
-      - finish_effect
-      - okay
-      - stop_effect
-      color_mode: color_temp
-      brightness: 255
-      hs_color:
-      - 27.911
-      - 58.298
-      rgb_color:
-      - 255
-      - 175
-      - 106
-      xy_color:
-      - 0.501
-      - 0.384
-      entity_id:
-      - light.bathroom_light_switch
-      - light.bedroom_light
-      - light.hue_light
-      - light.kitchen_track_lights
-      - light.kitchen_light_1
-      - light.kitchen_light_2
-      - light.kitchen_counter_lights
-      - light.living_room_lamp_big
-      - light.living_room_lamp_small
-      - light.living_room_shelf_light
-      - light.nightstand_lamp_b
-      - light.nightstand_lamp_l
-      - light.the_orb
-      - light.living_room_lamp_back
-      color_temp: 339
-      state: 'on'
-  metadata:
-    light.all_lights:
+    number.fire_tablet_screen_brightness:
+      entity_only: true
+    switch.fire_tablet_screen:
+      entity_only: true
+    number.fire_tablet_screen_off_timer:
       entity_only: true

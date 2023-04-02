@@ -86,14 +86,12 @@ off_script:
     data:
       topic: zigbee2mqtt/all_lights/set
       payload: '{"scene_recall": 0}'
+      qos: 0
+      retain: false
   - service: scene.turn_on
     data: {}
     target:
       entity_id: scene.off
-  - service: light.turn_off
-    data: {}
-    target:
-      entity_id: light.living_room_lamp_small
   - service: input_select.select_option
     data:
       option: offScene
@@ -240,6 +238,10 @@ off_a:
     data: {}
     target:
       entity_id: switch.tdisplay_sleep_toggle
+  - service: button.press
+    data: {}
+    target:
+      entity_id: button.tower_sleep
   mode: single
 sonos_r:
   alias: sonos brenin recent
@@ -320,6 +322,13 @@ s:
       sequence:
       - service: script.colors
         data: {}
+    - conditions:
+      - condition: state
+        entity_id: input_select.lr_scene
+        state: bright
+      sequence:
+      - service: script.bright_scene_script
+        data: {}
     default: []
   mode: single
 '1649791446703':
@@ -327,12 +336,22 @@ s:
   sequence:
   - service: number.set_value
     data:
-      value: '7'
+      value: '2'
     target:
       entity_id:
       - number.beam_bass
-      - number.kitchen_bass
       - number.bedroom_bass
+      - number.kitchen_bass
+      - number.office_bass
+  - service: number.set_value
+    data:
+      value: '1'
+    target:
+      entity_id:
+      - number.beam_treble
+      - number.bedroom_treble
+      - number.kitchen_treble
+      - number.office_treble
   - service: switch.turn_on
     data: {}
     target:
@@ -340,6 +359,7 @@ s:
       - switch.kitchen_loudness
       - switch.bedroom_loudness
       - switch.beam_loudness
+      - switch.office_loudness
   mode: single
   icon: mdi:bullhorn
 quiet_scene:
@@ -347,19 +367,30 @@ quiet_scene:
   sequence:
   - service: number.set_value
     data:
-      value: '3'
+      value: '-3'
     target:
       entity_id:
       - number.beam_bass
       - number.kitchen_bass
       - number.bedroom_bass
+      - number.office_bass
+  - service: number.set_value
+    data:
+      value: '0'
+    target:
+      entity_id:
+      - number.beam_treble
+      - number.bedroom_treble
+      - number.kitchen_treble
+      - number.office_treble
   - service: switch.turn_off
     data: {}
     target:
       entity_id:
-      - switch.kitchen_loudness
-      - switch.bedroom_loudness
       - switch.beam_loudness
+      - switch.bedroom_loudness
+      - switch.kitchen_loudness
+      - switch.office_loudness
   mode: single
   icon: mdi:cat
 dim_scene_script:
@@ -369,9 +400,6 @@ dim_scene_script:
     data: {}
     target:
       entity_id: scene.dim
-  - service: adaptive_lighting.apply
-    data:
-      entity_id: switch.adaptive_lighting_default
   - service: input_select.select_option
     data:
       option: dim
@@ -407,7 +435,7 @@ wake_up_alarm:
       entity_id: media_player.bedroom
   - service: media_player.volume_set
     data:
-      volume_level: 0.5
+      volume_level: 0.75
     target:
       entity_id: media_player.bedroom
   - service: media_player.unjoin
@@ -432,5 +460,275 @@ wake_up_alarm:
       - media_content_type: favorites_folder
         media_content_id: object.container.playlistContainer
   - service: script.dim_scene_script
+    data: {}
+  mode: single
+hs_light_set:
+  alias: ESPhome HS Light Set
+  sequence:
+  - service: light.turn_on
+    data_template:
+      entity_id: '{{ entity_id }}'
+      transition: 0
+      brightness: '{{ brightness }}'
+      hs_color:
+      - '{{ hue }}'
+      - '{{ saturation }}'
+  mode: restart
+volume_down_sonos_public:
+  alias: volume down sonos public
+  sequence:
+  - service: notify.mobile_app_landorghini13
+    data:
+      message: turn it down!!! {{ state_attr('media_player.beam', 'volume_level')
+        | float }}
+      title: too loud!
+  - service: media_player.volume_set
+    data_template:
+      volume_level: 0.2
+    target:
+      entity_id:
+      - media_player.beam
+      - media_player.bedroom
+      - media_player.kitchen
+      - media_player.office
+  - service: media_player.play_media
+    data:
+      media_content_id: media-source://tts/cloud?message=Turn it down!
+      media_content_type: music
+      extra:
+        volume: 30
+    target:
+      entity_id:
+      - media_player.beam_tts
+      - media_player.bedroom_tts
+      - media_player.kitchen_tts
+      - media_player.office_tts
+  - service: script.quiet_scene
+    data: {}
+  mode: single
+be_quiet_public:
+  alias: be quiet public
+  sequence:
+  - service: notify.mobile_app_landorghini13
+    data:
+      message: be quiet!!! {{ state_attr('media_player.beam', 'volume_level') | float
+        }}
+      title: too loud!
+  - service: media_player.volume_set
+    data_template:
+      volume_level: '{{ state_attr(''media_player.beam'', ''volume_level'') | float
+        - 0.1 }}'
+    target:
+      entity_id:
+      - media_player.beam
+      - media_player.bedroom
+      - media_player.kitchen
+      - media_player.office
+  - service: notify.mobile_app_landorghini13
+    data:
+      message: be quiet!!!
+      title: too loud!
+  - service: media_player.play_media
+    data:
+      media_content_id: media-source://tts/cloud?message=Be quiet!
+      media_content_type: music
+      extra:
+        volume: 20
+    target:
+      entity_id:
+      - media_player.beam_tts
+      - media_player.bedroom_tts
+      - media_player.kitchen_tts
+      - media_player.office_tts
+  - service: script.quiet_scene
+    data: {}
+  mode: single
+play_pause_sonos:
+  alias: play pause sonos
+  sequence:
+  - service: media_player.media_play_pause
+    data: {}
+    target:
+      entity_id:
+      - media_player.beam
+      - media_player.kitchen
+      - media_player.bedroom
+      - media_player.office
+  mode: single
+change_display_to_tv:
+  alias: Change Display To TV
+  sequence:
+  - service: button.press
+    data: {}
+    target:
+      entity_id: button.changedisplaytv
+  - service: media_player.select_source
+    data:
+      source: HDMI 2
+    target:
+      entity_id: media_player.55_tcl_roku_tv
+  mode: single
+change_display_to_pc:
+  alias: Change Display To PC
+  sequence:
+  - service: button.press
+    data: {}
+    target:
+      entity_id: button.changedisplaypc
+  - service: media_player.turn_off
+    data: {}
+    target:
+      entity_id: media_player.55_tcl_roku_tv
+  - choose:
+    - conditions:
+      - condition: not
+        conditions:
+        - condition: state
+          entity_id: input_select.pc_display
+          state: PC
+      sequence:
+      - service: input_select.select_option
+        data:
+          option: PC
+        target:
+          entity_id: input_select.pc_display
+  mode: single
+change_display_to_tv_extend:
+  alias: Change Display To TV Extend
+  sequence:
+  - service: button.press
+    data: {}
+    target:
+      entity_id: button.changedisplaytvextend
+  - service: media_player.select_source
+    data:
+      source: HDMI 2
+    target:
+      entity_id: media_player.55_tcl_roku_tv
+  mode: single
+set_desk_height:
+  alias: set desk height
+  sequence:
+  - choose:
+    - conditions:
+      - condition: template
+        value_template: '{{ height == ''toggle'' }}'
+      sequence:
+      - service: number.set_value
+        data:
+          value: "{% if ( states.number.desk_height_cm.state | round ) >= (states.input_number.desk_standing_height.state
+            | int) - 5 -%}\n  {{ states.input_number.desk_seated_height.state }}\n{%
+            else -%}\n  {{ states.input_number.desk_standing_height.state }}\n{% endif
+            -%}\n"
+        target:
+          entity_id: number.desk_height_cm
+    - conditions:
+      - condition: template
+        value_template: '{{ height == ''high'' }}'
+      sequence:
+      - service: number.set_value
+        data:
+          value: '{{ states.input_number.desk_standing_height.state }}
+
+            '
+        target:
+          entity_id: number.desk_height_cm
+    - conditions:
+      - condition: template
+        value_template: '{{ height == ''low'' }}'
+      sequence:
+      - service: number.set_value
+        data:
+          value: '{{ states.input_number.desk_seated_height.state }}
+
+            '
+        target:
+          entity_id: number.desk_height_cm
+    default:
+    - service: number.set_value
+      data:
+        value: '{{ height }}
+
+          '
+      target:
+        entity_id: number.desk_height_cm
+  mode: single
+notify_landon:
+  alias: notify landon
+  fields:
+    title:
+      description: The title of the notification
+      example: State change
+    message:
+      description: The message of the notification
+      example: Light is on!
+    mode:
+      description: auto, phone, tts
+      example: auto
+  sequence:
+  - if:
+    - condition: or
+      conditions:
+      - condition: template
+        value_template: '{{ mode == ''phone'' }}'
+      - condition: and
+        conditions:
+        - condition: template
+          value_template: '{{ mode == ''auto'' }}'
+        - condition: not
+          conditions:
+          - condition: zone
+            entity_id: person.landon
+            zone: zone.home
+    then:
+      service: notify.mobile_app_landorghini13
+      data:
+        message: '{{ message }}'
+        title: '{{ title }}'
+  - if:
+    - condition: or
+      conditions:
+      - condition: template
+        value_template: '{{ mode == ''tts'' }}'
+      - condition: and
+        conditions:
+        - condition: template
+          value_template: '{{ mode == ''auto'' }}'
+        - condition: zone
+          entity_id: person.landon
+          zone: zone.home
+    then:
+    - service: media_player.play_media
+      data:
+        media_content_id: media-source://tts/cloud?message={{ message }}
+        media_content_type: music
+        extra:
+          volume: 40
+      target:
+        entity_id:
+        - media_player.bedroom_tts
+        - media_player.beam_tts
+        - media_player.kitchen_tts
+  mode: single
+morning_script:
+  alias: Morning script
+  sequence:
+  - service: scene.turn_on
+    target:
+      entity_id: scene.hell
+    metadata: {}
+  - service: media_player.play_media
+    data:
+      media_content_id: media-source://tts/cloud?message={{ state_attr("sensor.daily_wake_up_announcement",
+        "Announcement") }}
+      media_content_type: music
+      extra:
+        volume: 50
+    target:
+      entity_id:
+      - media_player.kitchen_tts
+  - service: script.sonos_daily_mix
+    data: {}
+  - service: script.sonos_group_all
     data: {}
   mode: single

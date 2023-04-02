@@ -1,0 +1,25 @@
+template:
+  - sensor:
+      - name: "Daily wake up announcement"
+        state: |
+          {{ now().timestamp() | timestamp_custom("%A %B %d") }}
+        attributes:
+          Announcement: >
+            {{  as_timestamp(now()) | timestamp_custom("%A %B %d") }}.
+            The temperature is {{ state_attr("weather.home", "temperature") }}.
+            {{ states.sensor.vancouver_forecast.state }}
+            {% if is_state("sun.sun", "above_horizon") -%}
+              The sun rose {{ relative_time(states.sun.sun.last_changed) }} ago. and set at {{ as_timestamp(state_attr("sun.sun", "next_setting")) | timestamp_custom("%I:%M%p") }}
+            {%- else -%}
+              The sun will rise at {{ as_timestamp(state_attr("sun.sun", "next_rising")) | timestamp_custom("%I:%M%p") }}, and set at {{ as_timestamp(state_attr("sun.sun", "next_setting")) | timestamp_custom("%I:%M%p") }}.
+            {%- endif %}
+            {%- set ns = namespace(counter=0) %}
+            {% for state in state_attr("sensor.grocy_chores", "chores") -%}
+            {%- if as_timestamp(state.next_estimated_execution_time) - now().timestamp() < 86400 -%}
+            {%- if ns.counter == 0 -%}
+            The chores today are:
+            {% endif -%}
+            - {{ state.name }}
+            {% set ns.counter = ns.counter + 1 -%} 
+            {% endif -%}
+            {%- endfor %}
